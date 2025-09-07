@@ -8,6 +8,7 @@ export default defineConfig({
       minify: false,
       sourcemap: true,
       manifest: true,
+      outDir: "docs",
       rollupOptions: {
          output: {
             entryFileNames: 'assets/[name].js', // Entry points (your main files)

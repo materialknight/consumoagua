@@ -1,0 +1,113 @@
+.meters-menu {
+   display: flex;
+   justify-content: space-evenly;
+   /* display: flex; */
+
+   /* display: grid;
+   grid-template-rows: 1fr 1fr;
+   grid-auto-flow: column; */
+}
+
+.control {
+   display: flex;
+   flex-direction: column;
+}
+
+input:invalid {
+   background-color: red;
+   /* border: none; */
+   /* outline: 2px solid red; */
+   /* border-radius: 5px; */
+}
+
+.meters-table {
+   border-collapse: collapse;
+   text-align: center;
+   width: 100%;
+}
+
+.latest-table {
+
+   th,
+   td {
+      border: 1px solid black;
+   }
+
+   tbody {
+      tr:nth-child(odd) {
+         background-color: lightgreen;
+      }
+   }
+
+}
+
+.old-table {
+
+   th,
+   td {
+      border: 1px solid crimson;
+   }
+
+   tbody {
+
+      tr:nth-child(odd) {
+         background-color: lightpink;
+      }
+
+      tr:nth-child(even) {
+         background-color: whitesmoke;
+      }
+   }
+}
+
+body {
+   font-family: var(--fonts);
+   font-size: var(--fonts-size);
+   font-synthesis: none;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+
+   color-scheme: light;
+   margin: 0;
+
+   /* TODO: Change the 2 values below accordingly */
+   min-width: 400px;
+   min-height: 178px;
+
+   --fonts: system-ui, Arial, Helvetica, sans-serif;
+   --fonts-size: 15px;
+   --row-height: 1.9rem;
+   --spacing: 0.5rem;
+   --inclusive-color: forestgreen;
+   --exclusive-color: crimson;
+
+   padding: var(--spacing);
+}
+
+a {
+   display: flex;
+   align-items: center;
+   width: 100%;
+
+   text-decoration: none;
+}
+
+/*
+a:hover,
+button:hover,
+label:hover {
+   background-color: rgba(255, 255, 153, 0.5);
+   outline: 3px solid orange;
+} */
+
+button {
+   font-family: var(--fonts);
+
+   display: inline-flex;
+   align-items: center;
+
+   border: 1px solid black;
+   background-color: transparent;
+   color: crimson;
+}

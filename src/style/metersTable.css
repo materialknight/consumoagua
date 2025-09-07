@@ -1,0 +1,39 @@
+.meters-table {
+   border-collapse: collapse;
+   text-align: center;
+   width: 100%;
+}
+
+.latest-table {
+
+   th,
+   td {
+      border: 1px solid black;
+   }
+
+   tbody {
+      tr:nth-child(odd) {
+         background-color: lightgreen;
+      }
+   }
+
+}
+
+.old-table {
+
+   th,
+   td {
+      border: 1px solid crimson;
+   }
+
+   tbody {
+
+      tr:nth-child(odd) {
+         background-color: lightpink;
+      }
+
+      tr:nth-child(even) {
+         background-color: whitesmoke;
+      }
+   }
+}

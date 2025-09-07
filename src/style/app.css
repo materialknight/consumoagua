@@ -1,0 +1,55 @@
+@import "./metersMenu.css";
+@import "./metersTable.css";
+
+
+body {
+   font-family: var(--fonts);
+   font-size: var(--fonts-size);
+   font-synthesis: none;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+
+   color-scheme: light;
+   margin: 0;
+
+   /* TODO: Change the 2 values below accordingly */
+   min-width: 400px;
+   min-height: 178px;
+
+   --fonts: system-ui, Arial, Helvetica, sans-serif;
+   --fonts-size: 15px;
+   --row-height: 1.9rem;
+   --spacing: 0.5rem;
+   --inclusive-color: forestgreen;
+   --exclusive-color: crimson;
+
+   padding: var(--spacing);
+}
+
+a {
+   display: flex;
+   align-items: center;
+   width: 100%;
+
+   text-decoration: none;
+}
+
+/*
+a:hover,
+button:hover,
+label:hover {
+   background-color: rgba(255, 255, 153, 0.5);
+   outline: 3px solid orange;
+} */
+
+button {
+   font-family: var(--fonts);
+
+   display: inline-flex;
+   align-items: center;
+
+   border: 1px solid black;
+   background-color: transparent;
+   color: crimson;
+}

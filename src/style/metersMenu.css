@@ -1,0 +1,21 @@
+.meters-menu {
+   display: flex;
+   justify-content: space-evenly;
+   /* display: flex; */
+
+   /* display: grid;
+   grid-template-rows: 1fr 1fr;
+   grid-auto-flow: column; */
+}
+
+.control {
+   display: flex;
+   flex-direction: column;
+}
+
+input:invalid {
+   background-color: red;
+   /* border: none; */
+   /* outline: 2px solid red; */
+   /* border-radius: 5px; */
+}

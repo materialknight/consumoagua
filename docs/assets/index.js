@@ -12238,7 +12238,7 @@ clientExports.createRoot(document.getElementById("root")).render(
 );
 if ("serviceWorker" in navigator) {
   try {
-    navigator.serviceWorker.register("/service-worker.js");
+    navigator.serviceWorker.register(`${"/consumoagua/"}service-worker.js`);
   } catch (error) {
     console.error(`Your browser seems to support service workers, but the registration of this app's worker failed with error: ${error}`);
   }

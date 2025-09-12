@@ -2,6 +2,7 @@ import { useEffect, useState, createContext } from "react"
 import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
 import TableFilter from "./TableFilter.jsx"
+import DownloadButton from "./DownloadButton.jsx"
 import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
@@ -68,10 +69,11 @@ export default function Meters({ keys, db_connection }) {
    }, [tableNum])
 
    return (
-      <MetersContext.Provider value={{ keys, filtered_meters, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
+      <MetersContext.Provider value={{ keys, meters, filtered_meters, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
          <MetersMenu>
             <TableSelect />
             <TableFilter />
+            <DownloadButton />
             <ColSwitches />
          </MetersMenu>
          <MetersTable>

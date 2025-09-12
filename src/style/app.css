@@ -1,6 +1,6 @@
 @import "./metersMenu.css";
 @import "./metersTable.css";
-
+@import "./colSwitches.css";
 
 body {
    font-family: var(--fonts);

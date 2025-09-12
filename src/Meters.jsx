@@ -1,16 +1,55 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, createContext } from "react"
 import MetersMenu from "./MetersMenu.jsx"
+import TableSelect from "./TableSelect.jsx"
+import TableFilter from "./TableFilter.jsx"
+import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
+import THead from "./THead.jsx"
+import TBody from "./TBody.jsx"
+import { filter_table } from "./core-funcs.js"
+
+import { useLocalStorage } from "./custom-hooks.js"
+
+export const MetersContext = createContext()
 
 export default function Meters({ keys, db_connection }) {
-   const [meters, setMeters] = useState(null)
+   const cols = [
+      "fila",
+      "medidor",
+      "titular",
+      "anterior",
+      "desde",
+      "actual",
+      "hasta",
+      "recibo",
+      "pago",
+      "zona",
+      "caserío"
+   ]
+   const [shownCols, setShownCols] = useLocalStorage("shown_cols", {
+      fila: true,
+      medidor: true,
+      titular: true,
+      anterior: true,
+      desde: true,
+      actual: true,
+      hasta: true,
+      recibo: true,
+      pago: true,
+      zona: true,
+      caserío: true
+   })
+   const [meters, setMeters] = useState([])
    const [tableNum, setTableNum] = useState(null)
    const [filter, setFilter] = useState("")
+
+   const filtered_cols = cols.filter(col => shownCols[col])
+   const filtered_meters = filter_table(meters, filtered_cols, filter)
 
    useEffect(() => {
       if (Array.isArray(keys) && keys.length > 0)
       {
-         setTableNum(keys?.at(-1))
+         setTableNum(keys.at(-1))
       }
    }, [keys])
 
@@ -29,10 +68,17 @@ export default function Meters({ keys, db_connection }) {
    }, [tableNum])
 
    return (
-      <>
-         <MetersMenu keys={keys} tableNum={tableNum} setTableNum={setTableNum} filter={filter} setFilter={setFilter} />
-         <MetersTable meters={meters} is_latest_table={tableNum === keys?.at(-1)} filter={filter} />
-      </>
+      <MetersContext.Provider value={{ keys, filtered_meters, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
+         <MetersMenu>
+            <TableSelect />
+            <TableFilter />
+            <ColSwitches />
+         </MetersMenu>
+         <MetersTable>
+            <THead />
+            <TBody />
+         </MetersTable>
+      </MetersContext.Provider>
    )
 }
 

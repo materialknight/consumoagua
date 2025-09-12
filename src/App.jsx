@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef, useReducer } from "react"
-
+import { useState } from "react"
 import Meters from "./Meters.jsx"
 import Fees from "./Fees.jsx"
-
-import { useDB, useKeys, useLocalStorage } from "./core-funcs.js"
+import { useDB, useKeys, useLocalStorage } from "./custom-hooks.js"
 // import reducer from "./reducer.js"
 
 export default function App() {

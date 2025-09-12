@@ -1,60 +1,71 @@
-import { useState, useEffect, useRef } from "react"
 
-export function useDB(db_name, db_version) {
-   const [db, setDB] = useState(null)
-   const setup_db = success => {
-      const db_connection = success.target.result
-      db_connection.onclose = () => console.error("Connection to IndexedDB closed unexpectedly.")
-      db_connection.onerror = err => console.error(err)
-      db_connection.onversionchange = () => {
-         db_connection.close()
-         alert("The database on this tab is outdated, refresh the page to get the new version.")
-         console.warn("The database on this tab is outdated, refresh the page to get the new version.")
-      }
-      console.log('Connection to IndexedDB open.')
-      setDB(db_connection)
+export function filter_table(meters, filtered_cols, filter) {
+   const reduce_row = make_row_reducer(filtered_cols)
+   const reduced_rows = meters.map(reduce_row)
+   if (filter.length < 2)
+   {
+      return reduced_rows
    }
-   useEffect(() => {
-      const req = indexedDB.open(db_name, db_version)
-      req.onerror = err => console.error(err)
-      req.onupgradeneeded = set_initial_data
-      req.onsuccess = setup_db
-   }, [])
-   return db
+   const find_match = make_match_finder(filter)
+   return reduced_rows.filter(row => Object.values(row).some(find_match))
 }
 
-export function useKeys(db, db_name) {
-   const [keys, setKeys] = useState(null)
-   useEffect(() => {
-      if (!db) return
-
-      const req_keys = db
-         .transaction(db_name, "readonly")
-         .objectStore(db_name)
-         .getAllKeys()
-
-      req_keys.onsuccess = () => {
-         const retrieved_keys = req_keys.result
-         setKeys(retrieved_keys)
-      }
-   }, [db, db_name])
-   return keys
-}
-
-export function useLocalStorage(key, val) {
-   const [fees, setFees] = useState(null)
-   const load = key => JSON.parse(localStorage.getItem(key))
-   const save = (key, val) => localStorage.setItem(key, JSON.stringify(val))
-   useEffect(() => {
-      if (val === null || val === undefined)
+function make_row_reducer(filtered_cols) {
+   return function (row) {
+      const reduced_row = {}
+      for (const col of filtered_cols)
       {
-         setFees(load(key))
-         return
+         if (col === "fila") continue
+         reduced_row[col] = row[col]
       }
-      save(key, val)
-      setFees(load(key))
-   }, [key, val])
-   return fees
+      return reduced_row
+   }
+}
+
+function make_match_finder(filter) {
+   return function (val) {
+      let str_val = null
+      switch (val.constructor.name)
+      {
+         case "String":
+            str_val = val
+            break
+         case "Number":
+            str_val = val.toString()
+            break
+         case "Date":
+            str_val = date_str(val)
+            break
+         default:
+            throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
+
+      }
+      str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
+      const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
+      return str_val.includes(normalized_filter)
+   }
+}
+
+function remove_diacritic(char) {
+   switch (char)
+   {
+      case "á": return "a"
+      case "é": return "e"
+      case "í": return "i"
+      case "ó": return "o"
+      case "ú": return "u"
+      case "ñ": return "n"
+   }
+}
+
+export function date_str(date) {
+   return date.toLocaleDateString("es", {
+      weekday: "short",
+      day: "numeric",
+      year: "2-digit",
+      month: "short",
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+   })
 }
 
 export function parse_date(date_str) {

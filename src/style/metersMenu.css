@@ -13,9 +13,10 @@
    flex-direction: column;
 }
 
-input:invalid {
-   background-color: red;
-   /* border: none; */
-   /* outline: 2px solid red; */
-   /* border-radius: 5px; */
+.validated:invalid {
+   background-color: lightpink;
+}
+
+.validated:valid {
+   background-color: lightgreen;
 }

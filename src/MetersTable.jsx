@@ -1,78 +1,13 @@
-export default function MetersTable({ meters, is_latest_table, filter }) {
-   const cols = ["medidor", "titular", "anterior", "desde", "actual", "hasta", "recibo", "pago", "zona", "caserío"]
-   const THs = cols.map(col => <th key={col} data-col={col}>{col}</th>)
-   const date_str = (date) => {
-      return date.toLocaleDateString("es", {
-         weekday: "short",
-         day: "numeric",
-         year: "2-digit",
-         month: "short",
-         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      })
-   }
-   const match_filter = (val) => {
-      const remove_diacritics = (char) => {
-         switch (char)
-         {
-            case "á": return "a"
-            case "é": return "e"
-            case "í": return "i"
-            case "ó": return "o"
-            case "ú": return "u"
-            case "ñ": return "n"
-         }
-      }
-      let str_val = null
-      switch (val.constructor.name)
-      {
-         case "String":
-            str_val = val
-            break
-         case "Number":
-            str_val = val.toString()
-            break
-         case "Date":
-            str_val = date_str(val)
-            break
-         default:
-            throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
+import { MetersContext } from "./Meters.jsx"
+import { useContext } from "react"
 
-      }
-      str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritics)
-      const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritics)
-      return str_val.includes(normalized_filter)
-   }
-
-   const filtered_meters = filter.length < 2
-      ? meters
-      : meters.filter(meter => Object.values(meter).some(match_filter))
-
-   const TRs = filtered_meters?.map((entry, i) => {
-      const TDs = cols.map(col => {
-         let val = null
-         if (col === "desde" || col === "hasta")
-         {
-            val = date_str(entry[col])
-         }
-         else
-         {
-            val = entry[col]
-         }
-         return <td key={col} data-col={col}>{val}</td>
-      })
-      return (
-         <tr data-row={i + 1} key={entry.medidor}>
-            <td data-col="fila">{i + 1}</td>
-            {TDs}
-         </tr>
-      )
-   })
-
+export default function MetersTable({ children }) {
+   const { keys, filtered_meters, tableNum } = useContext(MetersContext)
+   const is_latest_table = tableNum === keys.at(-1)
    return (
       <table className={is_latest_table ? "meters-table latest-table" : "meters-table old-table"}>
-         <caption>Filas: {filtered_meters?.length}</caption>
-         <thead><tr data-row="0"><th data-col="fila">fila</th>{THs}</tr></thead>
-         <tbody>{TRs}</tbody>
+         <caption>Filas: {filtered_meters.length}</caption>
+         {children}
       </table>
    )
 }

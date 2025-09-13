@@ -11932,45 +11932,27 @@ function requireClient() {
   return client.exports;
 }
 var clientExports = requireClient();
-function MetersMenu({ keys, tableNum, setTableNum, filter, setFilter }) {
-  const options = keys == null ? void 0 : keys.toReversed().map((key, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: key, children: key }, i));
+function MetersMenu({ children }) {
+  const { meters } = reactExports.useContext(MetersContext);
   const dialogRef = reactExports.useRef(null);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("search", { className: "meters-menu", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "control", children: [
-        "Tabla",
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
-          "select",
-          {
-            onChange: (change) => setTableNum(Number(change.target.value)),
-            value: tableNum ?? "",
-            children: options
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "control", children: [
-        "Filtrar:",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: filter, onChange: (change) => setFilter(change.target.value) })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "switches", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
-          "Lecturas",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", hidden: true, name: "tab", defaultChecked: true, onChange: () => setTab("meters") })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
-          "Tarifas",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", hidden: true, name: "tab", onChange: () => setTab("fees") })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => dialogRef.current.showModal(), children: "Tomar lectura" })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { onClick: () => dialogRef.current.showModal(), children: "Tomar lectura" }),
+      children
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsx("dialog", { ref: dialogRef, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { method: "dialog", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("datalist", { id: "meter-options" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
+          list: "meter-options",
           pattern: "\\d+",
-          required: true
+          placeholder: "Ejemplo: 010101",
+          required: true,
+          className: "validated",
+          onInvalid: (e) => e.target.setCustomValidity("Por favor, introduzca un número."),
+          onInput: (e) => e.target.setCustomValidity("")
         }
       ),
       /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
@@ -11979,35 +11961,50 @@ function MetersMenu({ keys, tableNum, setTableNum, filter, setFilter }) {
     ] }) })
   ] });
 }
-function MetersTable({ meters, is_latest_table, filter }) {
-  const cols = ["medidor", "titular", "anterior", "desde", "actual", "hasta", "recibo", "pago", "zona", "caserío"];
-  const THs = cols.map((col) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { "data-col": col, children: col }, col));
-  const date_str = (date) => {
-    return date.toLocaleDateString("es", {
-      weekday: "short",
-      day: "numeric",
-      year: "2-digit",
-      month: "short",
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    });
-  };
-  const match_filter = (val) => {
-    const remove_diacritics = (char) => {
-      switch (char) {
-        case "á":
-          return "a";
-        case "é":
-          return "e";
-        case "í":
-          return "i";
-        case "ó":
-          return "o";
-        case "ú":
-          return "u";
-        case "ñ":
-          return "n";
+function TableSelect() {
+  const { keys, tableNum, setTableNum } = reactExports.useContext(MetersContext);
+  const table_options = keys.toReversed().map((key, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: key, children: key }, i));
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "control", children: [
+    "Tabla",
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "select",
+      {
+        onChange: (change) => setTableNum(Number(change.target.value)),
+        value: tableNum ?? "",
+        children: table_options
       }
-    };
+    )
+  ] });
+}
+function TableFilter() {
+  const { filter, setFilter } = reactExports.useContext(MetersContext);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "control", children: [
+    "Filtrar:",
+    /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "text", value: filter, onChange: (change) => setFilter(change.target.value), autoFocus: true })
+  ] });
+}
+const DownloadIcon = ({ fill, width = "24px", height = "24px" }) => /* @__PURE__ */ jsxRuntimeExports.jsx("svg", { xmlns: "http://www.w3.org/2000/svg", height, viewBox: "0 -960 960 960", width, fill, children: /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: "M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" }) });
+function name_file(table) {
+  const { desde, hasta } = table[0];
+  return [desde, hasta].map((date) => stringify_date(date, { month: "short" })).join("-").concat("-").concat(stringify_date(hasta, { year: "numeric" }));
+}
+function create_table_URL(table) {
+  let exportable_table = table.map((obj) => {
+    const row_copy = { ...obj };
+    row_copy.desde = export_date(row_copy.desde);
+    row_copy.hasta = export_date(row_copy.hasta);
+    return row_copy;
+  });
+  exportable_table = JSON.stringify(exportable_table, null, 2);
+  const blob = new Blob([exportable_table], { type: "application/json" });
+  return URL.createObjectURL(blob);
+}
+function export_date(date) {
+  return stringify_date(date, { year: "numeric" }).concat("-").concat(stringify_date(date, { month: "2-digit" })).concat("-").concat(stringify_date(date, { day: "2-digit" }));
+}
+function filter_indexes(meters, filtered_cols, filter) {
+  if (filter.length < 2) return Object.keys(meters);
+  const find_match = (val) => {
     let str_val = null;
     switch (val.constructor.name) {
       case "String":
@@ -12017,112 +12014,49 @@ function MetersTable({ meters, is_latest_table, filter }) {
         str_val = val.toString();
         break;
       case "Date":
-        str_val = date_str(val);
+        str_val = stringify_date(val);
         break;
       default:
         throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`);
     }
-    str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritics);
-    const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritics);
+    str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic);
+    const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic);
     return str_val.includes(normalized_filter);
   };
-  const filtered_meters = filter.length < 2 ? meters : meters.filter((meter) => Object.values(meter).some(match_filter));
-  const TRs = filtered_meters == null ? void 0 : filtered_meters.map((entry, i) => {
-    const TDs = cols.map((col) => {
-      let val = null;
-      if (col === "desde" || col === "hasta") {
-        val = date_str(entry[col]);
-      } else {
-        val = entry[col];
-      }
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("td", { "data-col": col, children: val }, col);
-    });
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { "data-row": i + 1, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("td", { "data-col": "fila", children: i + 1 }),
-      TDs
-    ] }, entry.medidor);
-  });
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: is_latest_table ? "meters-table latest-table" : "meters-table old-table", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("caption", { children: [
-      "Filas: ",
-      filtered_meters == null ? void 0 : filtered_meters.length
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("tr", { "data-row": "0", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("th", { "data-col": "fila", children: "fila" }),
-      THs
-    ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: TRs })
-  ] });
-}
-function Meters({ keys, db_connection }) {
-  const [meters, setMeters] = reactExports.useState(null);
-  const [tableNum, setTableNum] = reactExports.useState(null);
-  const [filter, setFilter] = reactExports.useState("");
-  reactExports.useEffect(() => {
-    if (Array.isArray(keys) && keys.length > 0) {
-      setTableNum(keys == null ? void 0 : keys.at(-1));
+  return meters.reduce((indexes, row, i) => {
+    const shown_vals = filtered_cols.filter((col) => col !== "fila").map((col) => row[col]);
+    if (shown_vals.some(find_match)) {
+      indexes.push(i);
     }
-  }, [keys]);
-  reactExports.useEffect(() => {
-    if (tableNum === null) return;
-    const req_table = db_connection.transaction("meters", "readonly").objectStore("meters").get(tableNum);
-    req_table.onerror = (err) => console.error(err);
-    req_table.onsuccess = () => {
-      setMeters(req_table.result);
-    };
-  }, [tableNum]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(MetersMenu, { keys, tableNum, setTableNum, filter, setFilter }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(MetersTable, { meters, is_latest_table: tableNum === (keys == null ? void 0 : keys.at(-1)), filter })
-  ] });
-}
-function FeesMenu({ fees }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Fees Menu" });
-}
-function useDB(db_name, db_version) {
-  const [db, setDB] = reactExports.useState(null);
-  const setup_db = (success) => {
-    const db_connection = success.target.result;
-    db_connection.onclose = () => console.error("Connection to IndexedDB closed unexpectedly.");
-    db_connection.onerror = (err) => console.error(err);
-    db_connection.onversionchange = () => {
-      db_connection.close();
-      alert("The database on this tab is outdated, refresh the page to get the new version.");
-      console.warn("The database on this tab is outdated, refresh the page to get the new version.");
-    };
-    console.log("Connection to IndexedDB open.");
-    setDB(db_connection);
-  };
-  reactExports.useEffect(() => {
-    const req = indexedDB.open(db_name, db_version);
-    req.onerror = (err) => console.error(err);
-    req.onupgradeneeded = set_initial_data;
-    req.onsuccess = setup_db;
+    return indexes;
   }, []);
-  return db;
 }
-function useKeys(db, db_name) {
-  const [keys, setKeys] = reactExports.useState(null);
-  reactExports.useEffect(() => {
-    if (!db) return;
-    const req_keys = db.transaction(db_name, "readonly").objectStore(db_name).getAllKeys();
-    req_keys.onsuccess = () => {
-      const retrieved_keys = req_keys.result;
-      setKeys(retrieved_keys);
-    };
-  }, [db, db_name]);
-  return keys;
+function remove_diacritic(char) {
+  switch (char) {
+    case "á":
+      return "a";
+    case "é":
+      return "e";
+    case "í":
+      return "i";
+    case "ó":
+      return "o";
+    case "ú":
+      return "u";
+    case "ñ":
+      return "n";
+  }
 }
-function useLocalStorage(key, val) {
-  const [fees, setFees] = reactExports.useState(null);
-  const load = (key2) => JSON.parse(localStorage.getItem(key2));
-  reactExports.useEffect(() => {
-    {
-      setFees(load(key));
-      return;
-    }
-  }, [key, val]);
-  return fees;
+function stringify_date(date, options = {
+  weekday: "short",
+  day: "numeric",
+  year: "2-digit",
+  month: "short"
+}) {
+  return date.toLocaleDateString("es", {
+    ...options,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  });
 }
 function set_initial_data(upgrade_needed_ev) {
   localStorage.setItem("fees", JSON.stringify([
@@ -12213,8 +12147,216 @@ function set_initial_data(upgrade_needed_ev) {
     }
   ]);
 }
+function DownloadButton() {
+  const { keys, tableNum, meters, last_table_is_sealed } = reactExports.useContext(MetersContext);
+  const table_is_downloadable = keys.at(-1) !== tableNum || last_table_is_sealed;
+  const [objURL, setObjURL] = reactExports.useState(null);
+  const [fileName, setFileName] = reactExports.useState(null);
+  reactExports.useEffect(() => {
+    if (table_is_downloadable && meters.length > 0) {
+      const table_URL = create_table_URL(meters);
+      setObjURL(table_URL);
+      setFileName(name_file(meters));
+      return () => {
+        URL.revokeObjectURL(table_URL);
+      };
+    } else {
+      setObjURL(null);
+    }
+  }, [table_is_downloadable, meters]);
+  const downloadLink = reactExports.useRef();
+  const denial_info = reactExports.useRef();
+  const download_table = () => {
+    if (table_is_downloadable && objURL) {
+      downloadLink.current.click();
+    } else {
+      denial_info.current.showModal();
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: objURL, download: fileName, hidden: true, ref: downloadLink }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        type: "button",
+        title: "descargar tabla",
+        onClick: download_table,
+        className: objURL ? "downloadable" : "non-downloadable",
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(DownloadIcon, {})
+      }
+    ),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("dialog", { ref: denial_info, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("form", { method: "dialog", className: "denial-info", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No se puede descargar la tabla más reciente hasta que esté completa y sellada." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "submit", children: "Aceptar" })
+    ] }) })
+  ] });
+}
+function ColSwitches() {
+  const { cols, shownCols, setShownCols } = reactExports.useContext(MetersContext);
+  const toggle = (col) => {
+    setShownCols((prev_shown_cols) => {
+      const next_shown_cols = { ...prev_shown_cols };
+      next_shown_cols[col] = !next_shown_cols[col];
+      return next_shown_cols;
+    });
+  };
+  const switches = cols.map((col, i) => {
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
+      col,
+      /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "checkbox", hidden: true, checked: shownCols[col], onChange: () => toggle(col) })
+    ] }, col);
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "switches", children: switches });
+}
+function MetersTable({ children }) {
+  const { keys, filtered_indexes, tableNum, filter } = reactExports.useContext(MetersContext);
+  const is_latest_table = tableNum === keys.at(-1);
+  const table_classes = ["meters-table"];
+  table_classes.push(is_latest_table ? "latest-table" : "old-table");
+  if (filter.length > 1) table_classes.push("filter-applied");
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("table", { className: table_classes.join(" "), children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("caption", { children: [
+      "Filas: ",
+      filtered_indexes.length
+    ] }),
+    children
+  ] });
+}
+function THead() {
+  const { filtered_cols } = reactExports.useContext(MetersContext);
+  const THs = filtered_cols.map((col) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { "data-col": col, children: col }, col));
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { "data-row": "0", children: THs }) });
+}
+function TBody() {
+  const { meters, filtered_indexes, filtered_cols } = reactExports.useContext(MetersContext);
+  const TRs = filtered_indexes.map((index, i) => {
+    const row = meters[index];
+    const TDs = filtered_cols.map((col) => {
+      let val = null;
+      if (col === "fila") {
+        val = i + 1;
+      } else if (col === "desde" || col === "hasta") {
+        val = stringify_date(row[col]);
+      } else {
+        val = row[col];
+      }
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("td", { "data-index": i, "data-col": col, children: val }, col);
+    });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { children: TDs }, row.medidor);
+  });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { children: TRs });
+}
+function useDB(db_name, db_version) {
+  const [db, setDB] = reactExports.useState(null);
+  const setup_db = (success) => {
+    const db_connection = success.target.result;
+    db_connection.onclose = () => console.error("Connection to IndexedDB closed unexpectedly.");
+    db_connection.onerror = (err) => console.error(err);
+    db_connection.onversionchange = () => {
+      db_connection.close();
+      alert("The database on this tab is outdated, refresh the page to get the new version.");
+      console.warn("The database on this tab is outdated, refresh the page to get the new version.");
+    };
+    console.log("Connection to IndexedDB open.");
+    setDB(db_connection);
+  };
+  reactExports.useEffect(() => {
+    const req = indexedDB.open(db_name, db_version);
+    req.onerror = (err) => console.error(err);
+    req.onupgradeneeded = set_initial_data;
+    req.onsuccess = setup_db;
+  }, [db_name, db_version]);
+  return db;
+}
+function useKeys(db, db_name) {
+  const [keys, setKeys] = reactExports.useState([]);
+  reactExports.useEffect(() => {
+    if (!db) return;
+    const req_keys = db.transaction(db_name, "readonly").objectStore(db_name).getAllKeys();
+    req_keys.onsuccess = () => {
+      const retrieved_keys = req_keys.result;
+      setKeys(retrieved_keys);
+    };
+  }, [db, db_name]);
+  return keys;
+}
+function useLocalStorage(key, init_val = null) {
+  const [store, setStore] = reactExports.useState(() => {
+    let saved = localStorage.getItem(key);
+    if (saved === "undefined") return null;
+    saved = JSON.parse(saved);
+    return saved === null && init_val !== void 0 ? init_val : saved;
+  });
+  reactExports.useEffect(() => {
+    if (store === void 0) throw new TypeError("Attempt to store undefined in localStorage!");
+    localStorage.setItem(key, JSON.stringify(store));
+  }, [key, store]);
+  return [store, setStore];
+}
+const MetersContext = reactExports.createContext();
+function Meters({ keys, db_connection }) {
+  const cols = [
+    "fila",
+    "medidor",
+    "titular",
+    "anterior",
+    "desde",
+    "actual",
+    "hasta",
+    "recibo",
+    "pago",
+    "zona",
+    "caserío"
+  ];
+  const [shownCols, setShownCols] = useLocalStorage("shown_cols", {
+    fila: true,
+    medidor: true,
+    titular: true,
+    anterior: true,
+    desde: true,
+    actual: true,
+    hasta: true,
+    recibo: true,
+    pago: true,
+    zona: true,
+    caserío: true
+  });
+  const [meters, setMeters] = reactExports.useState([]);
+  const [tableNum, setTableNum] = reactExports.useState(null);
+  const [filter, setFilter] = reactExports.useState("");
+  const filtered_cols = cols.filter((col) => shownCols[col]);
+  const filtered_indexes = filter_indexes(meters, filtered_cols, filter);
+  reactExports.useEffect(() => {
+    if (Array.isArray(keys) && keys.length > 0) {
+      setTableNum(keys.at(-1));
+    }
+  }, [keys]);
+  reactExports.useEffect(() => {
+    if (tableNum === null) return;
+    const req_table = db_connection.transaction("meters", "readonly").objectStore("meters").get(tableNum);
+    req_table.onerror = (err) => console.error(err);
+    req_table.onsuccess = () => {
+      setMeters(req_table.result);
+    };
+  }, [tableNum]);
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(MetersContext.Provider, { value: { keys, meters, filtered_indexes, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(MetersMenu, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableSelect, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TableFilter, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(DownloadButton, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ColSwitches, {})
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(MetersTable, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(THead, {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TBody, {})
+    ] })
+  ] });
+}
+function FeesMenu({ fees }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Fees Menu" });
+}
 function App() {
-  const [tab, setTab2] = reactExports.useState("meters");
+  const [tab, setTab] = reactExports.useState("meters");
   const db_connection = useDB("meters", 1);
   const keys = useKeys(db_connection, "meters");
   const fees = useLocalStorage("fees");
@@ -12223,11 +12365,11 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tabs", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
         "Lecturas",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "radio", hidden: true, name: "tab", defaultChecked: true, onChange: () => setTab2("meters") })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "radio", hidden: true, name: "tab", defaultChecked: true, onChange: () => setTab("meters") })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { children: [
         "Tarifas",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "radio", hidden: true, name: "tab", onChange: () => setTab2("fees") })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("input", { type: "radio", hidden: true, name: "tab", onChange: () => setTab("fees") })
       ] })
     ] }),
     tab === "meters" && /* @__PURE__ */ jsxRuntimeExports.jsx(Meters, { keys, db_connection }) || tab === "fees" && /* @__PURE__ */ jsxRuntimeExports.jsx(FeesMenu, { fees })

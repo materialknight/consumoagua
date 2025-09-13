@@ -2,11 +2,14 @@ import { MetersContext } from "./Meters.jsx"
 import { useContext } from "react"
 
 export default function MetersTable({ children }) {
-   const { keys, filtered_meters, tableNum } = useContext(MetersContext)
+   const { keys, filtered_indexes, tableNum, filter } = useContext(MetersContext)
    const is_latest_table = tableNum === keys.at(-1)
+   const table_classes = ["meters-table"]
+   table_classes.push(is_latest_table ? "latest-table" : "old-table")
+   if (filter.length > 1) table_classes.push("filter-applied")
    return (
-      <table className={is_latest_table ? "meters-table latest-table" : "meters-table old-table"}>
-         <caption>Filas: {filtered_meters.length}</caption>
+      <table className={table_classes.join(" ")}>
+         <caption>Filas: {filtered_indexes.length}</caption>
          {children}
       </table>
    )

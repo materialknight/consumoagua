@@ -7,7 +7,7 @@ import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
-import { filter_table } from "./core-funcs.js"
+import { filter_indexes } from "./core-funcs.js"
 
 import { useLocalStorage } from "./custom-hooks.js"
 
@@ -45,7 +45,7 @@ export default function Meters({ keys, db_connection }) {
    const [filter, setFilter] = useState("")
 
    const filtered_cols = cols.filter(col => shownCols[col])
-   const filtered_meters = filter_table(meters, filtered_cols, filter)
+   const filtered_indexes = filter_indexes(meters, filtered_cols, filter)
 
    useEffect(() => {
       if (Array.isArray(keys) && keys.length > 0)
@@ -69,7 +69,7 @@ export default function Meters({ keys, db_connection }) {
    }, [tableNum])
 
    return (
-      <MetersContext.Provider value={{ keys, meters, filtered_meters, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
+      <MetersContext.Provider value={{ keys, meters, filtered_indexes, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
          <MetersMenu>
             <TableSelect />
             <TableFilter />

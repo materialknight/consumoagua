@@ -51,7 +51,7 @@ function network_first(fetching) {
          })
          .catch(async err => {
             console.error(err.message)
-            const cached_response = await caches.open(CURRENT_CACHE).match(fetching.request)
+            const cached_response = await caches.open(CURRENT_CACHE).then(cache => cache.match(fetching.request))
             return cached_response ?? new Response('Both network and cache failed', {
                status: 404,
                headers: { 'Content-Type': 'text/plain' }

@@ -1,29 +1,36 @@
-
-export function filter_table(meters, filtered_cols, filter) {
-   const reduce_row = make_row_reducer(filtered_cols)
-   const reduced_rows = meters.map(reduce_row)
-   if (filter.length < 2)
-   {
-      return reduced_rows
-   }
-   const find_match = make_match_finder(filter)
-   return reduced_rows.filter(row => Object.values(row).some(find_match))
+export function name_file(table) {
+   const { desde, hasta } = table[0]
+   return [desde, hasta]
+      .map(date => stringify_date(date, { month: "short" }))
+      .join("-")
+      .concat("-")
+      .concat(stringify_date(hasta, { year: "numeric" }))
 }
 
-function make_row_reducer(filtered_cols) {
-   return function (row) {
-      const reduced_row = {}
-      for (const col of filtered_cols)
-      {
-         if (col === "fila") continue
-         reduced_row[col] = row[col]
-      }
-      return reduced_row
-   }
+export function create_table_URL(table) {
+   let exportable_table = table.map(obj => {
+      const row_copy = { ...obj }
+      row_copy.desde = export_date(row_copy.desde)
+      row_copy.hasta = export_date(row_copy.hasta)
+      return row_copy
+   })
+   exportable_table = JSON.stringify(exportable_table, null, 2)
+   const blob = new Blob([exportable_table], { type: "application/json" })
+   return URL.createObjectURL(blob)
 }
 
-function make_match_finder(filter) {
-   return function (val) {
+function export_date(date) {
+   return stringify_date(date, { year: "numeric" })
+      .concat("-")
+      .concat(stringify_date(date, { month: "2-digit" }))
+      .concat("-")
+      .concat(stringify_date(date, { day: "2-digit" }))
+}
+
+export function filter_indexes(meters, filtered_cols, filter) {
+   if (filter.length < 2) return Object.keys(meters)
+
+   const find_match = val => {
       let str_val = null
       switch (val.constructor.name)
       {
@@ -34,7 +41,7 @@ function make_match_finder(filter) {
             str_val = val.toString()
             break
          case "Date":
-            str_val = date_str(val)
+            str_val = stringify_date(val)
             break
          default:
             throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
@@ -43,7 +50,16 @@ function make_match_finder(filter) {
       str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
       const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
       return str_val.includes(normalized_filter)
+
    }
+   return meters.reduce((indexes, row, i) => {
+      const shown_vals = filtered_cols.filter(col => col !== "fila").map(col => row[col])
+      if (shown_vals.some(find_match))
+      {
+         indexes.push(i)
+      }
+      return indexes
+   }, [])
 }
 
 function remove_diacritic(char) {
@@ -58,12 +74,14 @@ function remove_diacritic(char) {
    }
 }
 
-export function date_str(date) {
+export function stringify_date(date, options = {
+   weekday: "short",
+   day: "numeric",
+   year: "2-digit",
+   month: "short"
+}) {
    return date.toLocaleDateString("es", {
-      weekday: "short",
-      day: "numeric",
-      year: "2-digit",
-      month: "short",
+      ...options,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
    })
 }

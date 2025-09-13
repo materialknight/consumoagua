@@ -1,0 +1,23 @@
+.downloadable {
+   background-color: aquamarine;
+}
+
+.downloadable:hover {
+   background-color: aqua;
+}
+
+.downloadable:active {
+   background-color: lightgreen;
+}
+
+.non-downloadable {
+   background-color: lightgray;
+}
+
+.non-downloadable:hover {
+   background-color: pink;
+}
+
+.non-downloadable:active {
+   background-color: darksalmon;
+}

@@ -14,13 +14,9 @@ export default function ColSwitches() {
 
    const switches = cols.map((col, i) => {
       return (
-         <label>{col}
-            <input
-               type="checkbox"
-               hidden
-               checked={shownCols[col]}
-               onChange={() => toggle(col)}
-            />
+         <label key={col}>
+            {col}
+            <input type="checkbox" hidden checked={shownCols[col]} onChange={() => toggle(col)} />
          </label>
       )
    })

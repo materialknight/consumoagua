@@ -1,6 +1,7 @@
 @import "./metersMenu.css";
 @import "./metersTable.css";
 @import "./colSwitches.css";
+@import "./downloadButton.css";
 
 body {
    font-family: var(--fonts);
@@ -27,12 +28,32 @@ body {
    padding: var(--spacing);
 }
 
-a {
+/* a {
    display: flex;
    align-items: center;
    width: 100%;
 
    text-decoration: none;
+} */
+
+.denial-info {
+   display: grid;
+   justify-items: center;
+
+   button {
+      font-family: var(--fonts);
+      font-size: var(--fonts-size);
+      padding: 7px;
+      background-color: aquamarine;
+   }
+
+   button:hover {
+      background-color: aqua;
+   }
+
+   button:active {
+      background-color: lightgreen;
+   }
 }
 
 /*
@@ -43,7 +64,7 @@ label:hover {
    outline: 3px solid orange;
 } */
 
-button {
+/* button {
    font-family: var(--fonts);
 
    display: inline-flex;
@@ -52,4 +73,4 @@ button {
    border: 1px solid black;
    background-color: transparent;
    color: crimson;
-}
+} */

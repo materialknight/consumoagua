@@ -1,10 +1,12 @@
 import { useContext } from "react"
 import { MetersContext } from "./Meters.jsx"
-import { date_str } from "./core-funcs.js"
+import { stringify_date } from "./core-funcs.js"
 
 export default function TBody() {
-   const { filtered_meters, filtered_cols } = useContext(MetersContext)
-   const TRs = filtered_meters.map((entry, i) => {
+   const { meters, filtered_indexes, filtered_cols } = useContext(MetersContext)
+
+   const TRs = filtered_indexes.map((index, i) => {
+      const row = meters[index]
       const TDs = filtered_cols.map(col => {
          let val = null
          if (col === "fila")
@@ -13,15 +15,15 @@ export default function TBody() {
          }
          else if (col === "desde" || col === "hasta")
          {
-            val = date_str(entry[col])
+            val = stringify_date(row[col])
          }
          else
          {
-            val = entry[col]
+            val = row[col]
          }
-         return <td key={col} data-col={col}>{val}</td>
+         return <td key={col} data-index={i} data-col={col}>{val}</td>
       })
-      return <tr data-row={i + 1} key={entry.medidor}>{TDs}</tr>
+      return <tr key={row.medidor}>{TDs}</tr>
    })
    return <tbody>{TRs}</tbody>
 }

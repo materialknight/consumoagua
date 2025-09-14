@@ -3,7 +3,6 @@ import { MetersContext } from "./Meters.jsx"
 
 export default function MetersMenu({ children }) {
    const { meters } = useContext(MetersContext)
-   // const meter_options = meters.map((row, i) => <option key={i} value={row.medidor}>{row.titular}</option>)
    const dialogRef = useRef(null)
    return (
       <>

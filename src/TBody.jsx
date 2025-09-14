@@ -1,10 +1,6 @@
-import { useContext } from "react"
-import { MetersContext } from "./Meters.jsx"
 import { stringify_date } from "./core-funcs.js"
 
-export default function TBody() {
-   const { meters, filtered_indexes, filtered_cols } = useContext(MetersContext)
-
+export default function TBody({ meters, filtered_indexes, filtered_cols }) {
    const TRs = filtered_indexes.map((index, i) => {
       const row = meters[index]
       const TDs = filtered_cols.map(col => {

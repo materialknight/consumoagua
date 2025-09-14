@@ -8,7 +8,7 @@ export default defineConfig({
    build: {
       minify: false,
       sourcemap: true,
-      manifest: true,
+      // manifest: true,
       outDir: "docs",
       rollupOptions: {
          output: {

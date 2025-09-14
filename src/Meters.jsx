@@ -3,6 +3,7 @@ import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
 import TableFilter from "./TableFilter.jsx"
 import DownloadButton from "./DownloadButton.jsx"
+import AddRowButton from "./AddRowButton.jsx"
 import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
@@ -43,6 +44,7 @@ export default function Meters({ keys, db_connection }) {
    const [meters, setMeters] = useState([])
    const [tableNum, setTableNum] = useState(null)
    const [filter, setFilter] = useState("")
+   const [lastTableMutable, setLastTableMutable] = useState(true)
 
    const filtered_cols = cols.filter(col => shownCols[col])
    const filtered_indexes = filter_indexes(meters, filtered_cols, filter)
@@ -71,14 +73,15 @@ export default function Meters({ keys, db_connection }) {
    return (
       <MetersContext.Provider value={{ keys, meters, filtered_indexes, tableNum, setTableNum, filter, setFilter, cols, shownCols, setShownCols, filtered_cols }}>
          <MetersMenu>
-            <TableSelect />
-            <TableFilter />
-            <DownloadButton />
-            <ColSwitches />
+            <TableSelect {...{ keys, tableNum, setTableNum }} />
+            <TableFilter {...{ filter, setFilter }} />
+            <DownloadButton {...{ keys, tableNum, meters, lastTableMutable }} />
+            <AddRowButton {...{ keys, tableNum, meters, lastTableMutable }} />
+            <ColSwitches {...{ cols, shownCols, setShownCols }} />
          </MetersMenu>
-         <MetersTable>
-            <THead />
-            <TBody />
+         <MetersTable {...{ keys, filtered_indexes, tableNum, filter }}>
+            <THead {...{ filtered_cols }} />
+            <TBody {...{ meters, filtered_indexes, filtered_cols }} />
          </MetersTable>
       </MetersContext.Provider>
    )

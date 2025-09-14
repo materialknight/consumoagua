@@ -1,9 +1,4 @@
-import { useContext } from "react"
-import { MetersContext } from "./Meters.jsx"
-
-export default function ColSwitches() {
-   const { cols, shownCols, setShownCols } = useContext(MetersContext)
-
+export default function ColSwitches({ cols, shownCols, setShownCols }) {
    const toggle = col => {
       setShownCols(prev_shown_cols => {
          const next_shown_cols = { ...prev_shown_cols }
@@ -11,7 +6,6 @@ export default function ColSwitches() {
          return next_shown_cols
       })
    }
-
    const switches = cols.map((col, i) => {
       return (
          <label key={col}>
@@ -20,7 +14,6 @@ export default function ColSwitches() {
          </label>
       )
    })
-
    return (
       <div className="switches">
          {switches}

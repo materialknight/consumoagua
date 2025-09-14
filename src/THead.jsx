@@ -1,8 +1,4 @@
-import { useContext } from "react"
-import { MetersContext } from "./Meters"
-
-export default function THead() {
-   const { filtered_cols } = useContext(MetersContext)
+export default function THead({ filtered_cols }) {
    const THs = filtered_cols.map(col => <th key={col} data-col={col}>{col}</th>)
    return (
       <thead>

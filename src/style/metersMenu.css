@@ -8,10 +8,7 @@
    grid-auto-flow: column; */
 }
 
-.control {
-   display: flex;
-   flex-direction: column;
-}
+
 
 .validated:invalid {
    background-color: lightpink;

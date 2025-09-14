@@ -1,7 +1,7 @@
-@import "./metersMenu.css";
-@import "./metersTable.css";
 @import "./colSwitches.css";
 @import "./downloadButton.css";
+@import "./metersMenu.css";
+@import "./metersTable.css";
 
 body {
    font-family: var(--fonts);
@@ -18,6 +18,7 @@ body {
    min-width: 400px;
    min-height: 178px;
 
+   /* Variables */
    --fonts: system-ui, Arial, Helvetica, sans-serif;
    --fonts-size: 15px;
    --row-height: 1.9rem;
@@ -28,32 +29,85 @@ body {
    padding: var(--spacing);
 }
 
-/* a {
-   display: flex;
-   align-items: center;
-   width: 100%;
+/* Force font into elements that don't inherit it from the body ancestor. */
 
-   text-decoration: none;
-} */
+button,
+select,
+input {
+   font-family: var(--fonts);
+   font-size: var(--fonts-size);
+   /* border-radius: 5px; */
+}
+
+/* Table styles */
+
+td,
+th,
+caption {
+   padding-top: 2px;
+   padding-bottom: 2px;
+}
+
+/* Button styles */
+
+.icon-btn {
+   width: 40px;
+   height: 40px;
+}
+
+.text-btn {
+   padding: 7px;
+}
+
+.ok-btn {
+   background-color: aquamarine;
+}
+
+.ok-btn:hover {
+   background-color: aqua;
+}
+
+.ok-btn:active {
+   background-color: lightgreen;
+}
+
+.not-ok-btn {
+   background-color: lightgray;
+}
+
+.not-ok-btn:hover {
+   background-color: pink;
+}
+
+.not-ok-btn:active {
+   background-color: darksalmon;
+}
+
+/* Modal styles */
 
 .denial-info {
    display: grid;
    justify-items: center;
+}
 
-   button {
-      font-family: var(--fonts);
-      font-size: var(--fonts-size);
-      padding: 7px;
-      background-color: aquamarine;
-   }
+/* Input styles */
 
-   button:hover {
-      background-color: aqua;
-   }
+select,
+[type=text] {
+   padding: 3px;
+}
 
-   button:active {
-      background-color: lightgreen;
-   }
+select {
+   background-color: beige;
+}
+
+.control {
+   display: grid;
+}
+
+.label-span {
+   padding-top: 3px;
+   padding-bottom: 3px;
 }
 
 /*

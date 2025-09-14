@@ -1,12 +1,14 @@
-import { useContext } from "react"
-import { MetersContext } from "./Meters.jsx"
-
-export default function TableFilter() {
-   const { filter, setFilter } = useContext(MetersContext)
+export default function TableFilter({ filter, setFilter }) {
    return (
       <label className="control">
-         Filtrar:
-         <input type="text" value={filter} onChange={change => setFilter(change.target.value)} autoFocus />
+         <span className="label-span">Filtrar:</span>
+         <input
+            type="text"
+            value={filter}
+            onChange={change => setFilter(change.target.value)}
+            autoFocus
+            className={filter.length > 1 ? "filter-applied" : ""}
+         />
       </label>
    )
 }

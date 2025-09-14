@@ -1,8 +1,4 @@
-import { MetersContext } from "./Meters.jsx"
-import { useContext } from "react"
-
-export default function MetersTable({ children }) {
-   const { keys, filtered_indexes, tableNum, filter } = useContext(MetersContext)
+export default function MetersTable({ keys, filtered_indexes, tableNum, filter, children }) {
    const is_latest_table = tableNum === keys.at(-1)
    const table_classes = ["meters-table"]
    table_classes.push(is_latest_table ? "latest-table" : "old-table")

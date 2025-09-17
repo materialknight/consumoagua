@@ -1,13 +1,11 @@
-import { useContext, useRef } from "react"
-import { MetersContext } from "./Meters.jsx"
+import { useRef } from "react"
 
 export default function MetersMenu({ children }) {
-   const { meters } = useContext(MetersContext)
    const dialogRef = useRef(null)
    return (
       <>
          <search className="meters-menu">
-            <button onClick={() => dialogRef.current.showModal()}>Tomar lectura</button>
+            <button onClick={() => alert("Oh, hi!")}>Tomar lectura</button>
             {children}
          </search>
          <dialog ref={dialogRef}>

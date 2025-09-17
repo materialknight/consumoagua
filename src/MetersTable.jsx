@@ -10,20 +10,15 @@ export default function MetersTable({ keys, filtered_indexes, tableNum, filter, 
       </table>
    )
 }
+//? La tabla más reciente solo puede cerrarse si hay fecha de pago, y solo hasta después de esa fecha.
+//? Guardar en state: multa, fecha de pago, número del siguiente recibo.
+//? Agregar columnas: "deuda" y "multa".
 
-// const cols = [
-//    ["A", "medidor"],
-//    ["B", "titular"],
-//    ["C", "anterior"],
-//    ["D", "desde"],
-//    ["E", "actual"],
-//    ["F", "hasta"],
-//    ["G", "recibo"],
-//    ["H", "pago"],
-//    ["I", "zona"],
-//    ["J", "caserío"]
-// ]
-
+// Acumulado con multa (1)
+// Pagado.
+// Diferido: El que no tendrá multa en su siguiente pago por haber avisado que pagaría tarde.
+// Exonerado: Su recibo debe salir a 0.
+// ----------
 // The app must save the penalty fee, which the user will be prompted to provide when attempting to print with no saved penalty fee, but with the posibility to change it at any time.
 
 // The app must save the payment date, which the user must be prompted to provide, either when attempting to print with no saved payment date, or when attempting to print after the last saved payment date has passed.
@@ -40,31 +35,3 @@ export default function MetersTable({ keys, filtered_indexes, tableNum, filter, 
 // - Every "deferred" becomes "accumulated (1)" (where "(1)" is the number of previous unpaid periods that will be charged in the next receipt in addition to the current period).
 // - Every "paid" becomes "-".
 // - Every "unpaid" becomes "penalty (1)" (where "(1)" is the number of previous unpaid periods that will be charged in the next receipt with a penalty, in addition to the current period).
-
-// ! No table version:
-
-// const header_cells = cols.map(col => {
-//    const [letter, col_name] = col
-//    return <div key={letter} data-col={letter}>{col_name}</div>
-// })
-// const rows = meters?.map((entry, i) => {
-//    const cells = cols.map(col => {
-//       const [letter, col_name] = col
-//       return <div key={letter} data-col={letter}>{entry[col_name]}</div>
-//    })
-//    return (
-//       <div data-row={i + 1} key={entry.medidor}>
-//          <div data-col="fila">{i + 1}</div>
-//          {cells}
-//       </div>
-//    )
-// })
-// return (
-//    <div className="meters-table">
-//       <div className="table-header" data-row="0">
-//          <div data-col="fila">fila</div>
-//          {header_cells}
-//       </div>
-//       {rows}
-//    </div>
-// )

@@ -3,7 +3,7 @@ export default function TableFilter({ filter, setFilter }) {
       <label className="control">
          <span className="label-span">Filtrar:</span>
          <input
-            type="text"
+            type="search"
             value={filter}
             onChange={change => setFilter(change.target.value)}
             autoFocus

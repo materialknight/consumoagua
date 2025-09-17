@@ -14,7 +14,7 @@ export default function App() {
    return (
       <>
          <header>
-            <h1>Registro de consumo de Agua</h1>
+            <h1>Registro de consumo de agua</h1>
             {/* <img src="icons/favicon.png" alt="JAAP logo" style="max-width:8vw; padding-top: 1%;"> */}
          </header>
          <div className="tabs">

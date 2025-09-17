@@ -123,7 +123,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "1",
          caserío: "La Paz"
       },
       {
@@ -135,7 +135,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "2",
          caserío: "La Paz"
       },
       {
@@ -147,7 +147,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "3",
          caserío: "La Paz"
       }
    ])
@@ -162,7 +162,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "1",
          caserío: "La Paz"
       },
       {
@@ -174,7 +174,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "2",
          caserío: "La Paz"
       },
       {
@@ -186,7 +186,7 @@ export function set_initial_data(upgrade_needed_ev) {
          hasta: new Date(1727848800000),
          recibo: 12607,
          pago: "-",
-         zona: 1,
+         zona: "3",
          caserío: "La Paz"
       }
    ])

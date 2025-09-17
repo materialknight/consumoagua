@@ -50,13 +50,17 @@ caption {
 
 /* Button styles */
 
+button {
+   border-width: 1px;
+}
+
 .icon-btn {
    width: 40px;
    height: 40px;
 }
 
 .text-btn {
-   padding: 7px;
+   padding: 6px;
 }
 
 .ok-btn {
@@ -90,15 +94,33 @@ caption {
    justify-items: center;
 }
 
+.new-entry {
+   display: grid;
+}
+
+.accept-cancel {
+   display: flex;
+   justify-content: space-evenly;
+   padding-top: 14px;
+}
+
 /* Input styles */
 
 select,
-[type=text] {
+input {
    padding: 3px;
 }
 
-select {
-   background-color: beige;
+select:hover {
+   background-color: aqua;
+}
+
+.latest-selection {
+   background-color: palegreen;
+}
+
+.old-selection {
+   background-color: pink;
 }
 
 .control {
@@ -109,22 +131,3 @@ select {
    padding-top: 3px;
    padding-bottom: 3px;
 }
-
-/*
-a:hover,
-button:hover,
-label:hover {
-   background-color: rgba(255, 255, 153, 0.5);
-   outline: 3px solid orange;
-} */
-
-/* button {
-   font-family: var(--fonts);
-
-   display: inline-flex;
-   align-items: center;
-
-   border: 1px solid black;
-   background-color: transparent;
-   color: crimson;
-} */

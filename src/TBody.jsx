@@ -1,8 +1,8 @@
-import { stringify_date } from "./core-funcs.js"
+import { parse_date, display_date } from "./core-funcs.js"
 
 export default function TBody({ meters, filtered_indexes, filtered_cols }) {
    const TRs = filtered_indexes.map((index, i) => {
-      const row = meters[index]
+      const row = meters.table[index]
       const TDs = filtered_cols.map(col => {
          let val = null
          if (col === "fila")
@@ -11,7 +11,7 @@ export default function TBody({ meters, filtered_indexes, filtered_cols }) {
          }
          else if (col === "desde" || col === "hasta")
          {
-            val = stringify_date(row[col])
+            val = row[col] ? display_date(row[col]) : null
          }
          else
          {

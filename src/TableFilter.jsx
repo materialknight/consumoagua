@@ -7,7 +7,7 @@ export default function TableFilter({ filter, setFilter }) {
             value={filter}
             onChange={change => setFilter(change.target.value)}
             autoFocus
-            className={filter.length > 1 ? "filter-applied" : ""}
+            className={filter.length > 0 ? "filter-applied" : ""}
          />
       </label>
    )

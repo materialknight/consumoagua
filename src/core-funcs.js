@@ -1,34 +1,33 @@
 export function name_file(table) {
-   const { desde, hasta } = table[0]
-   return [desde, hasta]
-      .map(date => stringify_date(date, { month: "short" }))
-      .join("-")
-      .concat("-")
-      .concat(stringify_date(hasta, { year: "numeric" }))
+   const row = table[0]
+   const month_1 = display_date(row.desde, { month: "short" })
+   const month_2 = display_date(row.hasta, { month: "short" })
+   const year = row.hasta.getFullYear().toString()
+   return month_1.concat("-", month_2, "-", year)
 }
 
-export function create_table_URL(table) {
-   let exportable_table = table.map(obj => {
-      const row_copy = { ...obj }
-      row_copy.desde = export_date(row_copy.desde)
-      row_copy.hasta = export_date(row_copy.hasta)
-      return row_copy
-   })
-   exportable_table = JSON.stringify(exportable_table, null, 2)
-   const blob = new Blob([exportable_table], { type: "application/json" })
+export function create_table_URL(meters) {
+   const meters_clone = structuredClone(meters)
+   for (const row of meters_clone.table)
+   {
+      row.desde = stringify_date(row.desde)
+      row.hasta = stringify_date(row.hasta)
+   }
+   const meters_str = JSON.stringify(meters_clone, null, 2)
+   const blob = new Blob([meters_str], { type: "application/json" })
    return URL.createObjectURL(blob)
 }
 
-function export_date(date) {
-   return stringify_date(date, { year: "numeric" })
-      .concat("-")
-      .concat(stringify_date(date, { month: "2-digit" }))
-      .concat("-")
-      .concat(stringify_date(date, { day: "2-digit" }))
+export function stringify_date(date) {
+   // For exporting dates in a JSON file in human-readable format, with create_table_URL().
+   const year = date.getFullYear().toString()
+   const month = (date.getMonth() + 1).toString().padStart(2, "0")
+   const day = date.getDate().toString().padStart(2, "0")
+   return year.concat("-", month, "-", day)
 }
 
-export function filter_indexes(meters, filtered_cols, filter) {
-   if (filter.length < 2) return Object.keys(meters)
+export function filter_indexes(table, filtered_cols, filter) {
+   if (filter.length < 1) return Object.keys(table)
 
    const find_match = val => {
       let str_val = null
@@ -41,7 +40,7 @@ export function filter_indexes(meters, filtered_cols, filter) {
             str_val = val.toString()
             break
          case "Date":
-            str_val = stringify_date(val)
+            str_val = display_date(val)
             break
          default:
             throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
@@ -52,7 +51,7 @@ export function filter_indexes(meters, filtered_cols, filter) {
       return str_val.includes(normalized_filter)
 
    }
-   return meters.reduce((indexes, row, i) => {
+   return table.reduce((indexes, row, i) => {
       const shown_vals = filtered_cols.filter(col => col !== "fila").map(col => row[col])
       if (shown_vals.some(find_match))
       {
@@ -74,7 +73,7 @@ function remove_diacritic(char) {
    }
 }
 
-export function stringify_date(date, options = {
+export function display_date(date, options = {
    weekday: "short",
    day: "numeric",
    year: "2-digit",
@@ -97,7 +96,7 @@ export function parse_date(date_str) {
    return new Date(...date_args)
 }
 
-export function set_initial_data(upgrade_needed_ev) {
+export function set_initial_data(db, old_version_num = null, new_version_num = null) {
 
    localStorage.setItem("fees", JSON.stringify([
       { mínimo: 0, máximo: 6, fórmula: "2.61" },
@@ -109,87 +108,106 @@ export function set_initial_data(upgrade_needed_ev) {
       { mínimo: 201, máximo: null, fórmula: "1.50 * consumo + 1.60" }
    ]))
 
-   const db = upgrade_needed_ev.target.result
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
-
+   // Pendiente, Efectuado, Acumulado sin multa, acumulado con multa, exonerado.
    // Test data below. Only 1 empty array should be added in production.
-   meters_store.add([
-      {
-         medidor: "010101",
-         titular: "Tobías López",
-         anterior: 10,
-         desde: new Date(1726293600000),
-         actual: 20,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "1",
-         caserío: "La Paz"
-      },
-      {
-         medidor: "020202",
-         titular: "Levi Menénez",
-         anterior: 0,
-         desde: new Date(1726293600000),
-         actual: 15,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "2",
-         caserío: "La Paz"
-      },
-      {
-         medidor: "030303",
-         titular: "Baruc Hernández",
-         anterior: 20,
-         desde: new Date(1726293600000),
-         actual: 30,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "3",
-         caserío: "La Paz"
-      }
-   ])
+   meters_store.add({
+      last_pay_day: null,
+      editable: false,
+      table: [
+         {
+            medidor: "010101",
+            titular: "Tobías López",
+            anterior: 10,
+            desde: new Date(2025, 0, 15),
+            actual: 20,
+            hasta: new Date(2025, 1, 15),
+            recibo: 12607,
+            pago: "efectuado",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "1",
+            caserío: "La Paz"
+         },
+         {
+            medidor: "020202",
+            titular: "Levi Menénez",
+            anterior: 0,
+            desde: new Date(2025, 0, 15),
+            actual: 15,
+            hasta: new Date(2025, 1, 15),
+            recibo: 12607,
+            pago: "efectuado",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "2",
+            caserío: "El Progreso"
+         },
+         {
+            medidor: "030303",
+            titular: "Baruc Hernández",
+            anterior: 20,
+            desde: new Date(2025, 0, 15),
+            actual: 30,
+            hasta: new Date(2025, 1, 15),
+            recibo: 12607,
+            pago: "efectuado",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "3",
+            caserío: "La Libertad"
+         }
+      ]
+   })
 
-   meters_store.add([
-      {
-         medidor: "010101",
-         titular: "Tobías López",
-         anterior: 20,
-         desde: new Date(1726293600000),
-         actual: 30,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "1",
-         caserío: "La Paz"
-      },
-      {
-         medidor: "020202",
-         titular: "Levi Menénez",
-         anterior: 15,
-         desde: new Date(1726293600000),
-         actual: 40,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "2",
-         caserío: "La Paz"
-      },
-      {
-         medidor: "030303",
-         titular: "Baruc Hernández",
-         anterior: 30,
-         desde: new Date(1726293600000),
-         actual: 50,
-         hasta: new Date(1727848800000),
-         recibo: 12607,
-         pago: "-",
-         zona: "3",
-         caserío: "La Paz"
-      }
-   ])
+   meters_store.add({
+      last_pay_day: null,
+      editable: true,
+      table: [
+         {
+            medidor: "010101",
+            titular: "Tobías López",
+            anterior: 20,
+            desde: new Date(2025, 1, 15),
+            actual: 30,
+            hasta: new Date(2025, 2, 15),
+            recibo: 12607,
+            pago: "pendiente",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "1",
+            caserío: "La Paz"
+         },
+         {
+            medidor: "020202",
+            titular: "Levi Menénez",
+            anterior: 15,
+            desde: new Date(2025, 1, 15),
+            actual: 40,
+            hasta: new Date(2025, 2, 15),
+            recibo: 12607,
+            pago: "pendiente",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "2",
+            caserío: "El Progreso"
+         },
+         {
+            medidor: "030303",
+            titular: "Baruc Hernández",
+            anterior: 30,
+            desde: new Date(2025, 1, 15),
+            actual: 50,
+            hasta: new Date(2025, 2, 15),
+            recibo: 12607,
+            pago: "pendiente",
+            deuda: 0.00,
+            multa: 0.00,
+            zona: "3",
+            caserío: "La Libertad"
+         }
+      ]
+   })
 
    // todo: sync table with .json, new table from .json.
    // todo: create indexes(?)

@@ -1,16 +1,16 @@
 import { useState } from "react"
 import Meters from "./Meters.jsx"
 import Fees from "./Fees.jsx"
-import { useDB, useKeys, useLocalStorage } from "./custom-hooks.js"
-// import reducer from "./reducer.js"
 
 export default function App() {
-
    const [tab, setTab] = useState("meters")
-   const db_connection = useDB("meters", 1)
-   const keys = useKeys(db_connection, "meters")
-   const fees = useLocalStorage("fees")
-
+   const render_tab = (tab) => {
+      switch (tab)
+      {
+         case "meters": return <Meters />
+         case "fees": return <Fees />
+      }
+   }
    return (
       <>
          <header>
@@ -25,11 +25,7 @@ export default function App() {
                <input type="radio" hidden name="tab" onChange={() => setTab("fees")} />
             </label>
          </div>
-         {
-            tab === "meters" && <Meters keys={keys} db_connection={db_connection} />
-            ||
-            tab === "fees" && <Fees fees={fees} />
-         }
+         {render_tab(tab)}
       </>
    )
 }

@@ -15,8 +15,8 @@ body {
    margin: 0;
 
    /* TODO: Change the 2 values below accordingly */
-   min-width: 400px;
-   min-height: 178px;
+   /* min-width: 400px; */
+   /* min-height: 178px; */
 
    /* Variables */
    --fonts: system-ui, Arial, Helvetica, sans-serif;

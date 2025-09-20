@@ -2,7 +2,7 @@ export default function MetersTable({ keys, filtered_indexes, tableNum, filter, 
    const is_latest_table = tableNum === keys.at(-1)
    const table_classes = ["meters-table"]
    table_classes.push(is_latest_table ? "latest-table" : "old-table")
-   if (filter.length > 1) table_classes.push("filter-applied")
+   if (filter.length > 0) table_classes.push("filter-applied")
    return (
       <table className={table_classes.join(" ")}>
          <caption>Filas: {filtered_indexes.length}</caption>
@@ -12,13 +12,8 @@ export default function MetersTable({ keys, filtered_indexes, tableNum, filter, 
 }
 //? La tabla más reciente solo puede cerrarse si hay fecha de pago, y solo hasta después de esa fecha.
 //? Guardar en state: multa, fecha de pago, número del siguiente recibo.
-//? Agregar columnas: "deuda" y "multa".
+//? "exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"
 
-// Acumulado con multa (1)
-// Pagado.
-// Diferido: El que no tendrá multa en su siguiente pago por haber avisado que pagaría tarde.
-// Exonerado: Su recibo debe salir a 0.
-// ----------
 // The app must save the penalty fee, which the user will be prompted to provide when attempting to print with no saved penalty fee, but with the posibility to change it at any time.
 
 // The app must save the payment date, which the user must be prompted to provide, either when attempting to print with no saved payment date, or when attempting to print after the last saved payment date has passed.

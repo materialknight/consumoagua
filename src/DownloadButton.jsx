@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import { create_table_URL, name_file } from "./core-funcs.js"
 
-export default function DownloadButton({ keys, tableNum, meters, lastTableMutable }) {
-   const table_loaded = meters.length > 0
-   const not_last_table = tableNum !== keys.at(-1)
-   const table_downloadable = table_loaded && (!lastTableMutable || not_last_table)
+export default function DownloadButton({ meters }) {
+   const table_loaded = meters.table.length > 0
+   const table_downloadable = table_loaded && !meters.editable
 
    const [objURL, setObjURL] = useState(null)
    const [fileName, setFileName] = useState(null)
@@ -12,11 +11,11 @@ export default function DownloadButton({ keys, tableNum, meters, lastTableMutabl
    useEffect(() => {
       if (table_downloadable)
       {
-         const table_URL = create_table_URL(meters)
-         setObjURL(table_URL)
-         setFileName(name_file(meters))
+         const meters_URL = create_table_URL(meters)
+         setObjURL(meters_URL)
+         setFileName(name_file(meters.table))
          return () => {
-            URL.revokeObjectURL(table_URL)
+            URL.revokeObjectURL(meters_URL)
          }
       }
       else

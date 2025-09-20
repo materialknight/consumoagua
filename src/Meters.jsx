@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
 import TableFilter from "./TableFilter.jsx"
@@ -8,23 +8,27 @@ import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
-import { filter_indexes } from "./core-funcs.js"
-import { useLocalStorage } from "./custom-hooks.js"
+import reducer from "./reducer.js"
+import { filter_indexes, set_initial_data } from "./core-funcs.js"
+import { useIDB, useKeys, useLocalStorage } from "./custom-hooks.js"
 
-export default function Meters({ keys, db_connection }) {
-   const cols = [
-      "fila",
-      "medidor",
-      "titular",
-      "anterior",
-      "desde",
-      "actual",
-      "hasta",
-      "recibo",
-      "pago",
-      "zona",
-      "caserío"
-   ]
+const cols = [
+   "fila",
+   "medidor",
+   "titular",
+   "anterior",
+   "desde",
+   "actual",
+   "hasta",
+   "recibo",
+   "pago",
+   "deuda",
+   "multa",
+   "zona",
+   "caserío"
+]
+
+export default function Meters() {
    const [shownCols, setShownCols] = useLocalStorage("shown_cols", {
       fila: true,
       medidor: true,
@@ -35,45 +39,58 @@ export default function Meters({ keys, db_connection }) {
       hasta: true,
       recibo: true,
       pago: true,
+      deuda: true,
+      multa: true,
       zona: true,
       caserío: true
    })
-   const [meters, setMeters] = useState([])
+
+   const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
+   const [meters, dispatch] = useReducer(reducer, {
+      table: [],
+      editable: false,
+      fine: null,
+      last_pay_day: null
+   })
    const [tableNum, setTableNum] = useState(null)
    const [filter, setFilter] = useState("")
-   const [lastTableMutable, setLastTableMutable] = useState(true)
 
    const filtered_cols = cols.filter(col => shownCols[col])
-   const filtered_indexes = filter_indexes(meters, filtered_cols, filter)
+   const filtered_indexes = filter_indexes(meters.table, filtered_cols, filter)
+   //! See if the 2 lines below leak memory by opening several connections, in which case, they should be in the parent component:
+   const db_connection = useIDB("meters", 1, set_initial_data)
+   const keys = useKeys(db_connection, "meters")
 
    useEffect(() => {
-      if (Array.isArray(keys) && keys.length > 0)
+      if (keys.length > 0)
       {
          setTableNum(keys.at(-1))
       }
    }, [keys])
 
    useEffect(() => {
-      if (tableNum === null) return
-
-      const req_table = db_connection
-         .transaction("meters", "readonly")
-         .objectStore("meters")
-         .get(tableNum)
-
-      req_table.onerror = err => console.error(err)
-      req_table.onsuccess = () => {
-         setMeters(req_table.result)
+      if (tableNum)
+      {
+         db_connection.get("meters", tableNum).then(table => {
+            dispatch({ type: "LOAD_TABLE", table })
+         })
       }
    }, [tableNum])
+
+   // useEffect(() => {
+   //    if (db_connection)
+   //    {
+   //       db_connection.put("meters", meters)
+   //    }
+   // }, [db_connection, meters])
 
    return (
       <main>
          <MetersMenu>
             <TableSelect {...{ keys, tableNum, setTableNum }} />
             <TableFilter {...{ filter, setFilter }} />
-            <DownloadButton {...{ keys, tableNum, meters, lastTableMutable }} />
-            <AddRowButton {...{ keys, tableNum, meters, lastTableMutable }} />
+            <DownloadButton {...{ meters }} />
+            <AddRowButton {...{ db_connection, meters, tableNum, dispatch }} />
             <ColSwitches {...{ cols, shownCols, setShownCols }} />
          </MetersMenu>
          <MetersTable {...{ keys, filtered_indexes, tableNum, filter }}>

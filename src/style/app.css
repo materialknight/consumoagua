@@ -43,11 +43,28 @@ input {
 
 /* Table styles */
 
+/* ESTILO EN DUDA: */
+tr:hover {
+   /* border: 2px solid red; */
+   outline-width: 2px;
+   outline-style: solid;
+   outline-color: blueviolet;
+   outline-offset: 1px;
+}
+
 td,
 th {
    padding-top: 3px;
    padding-bottom: 3px;
 }
+
+th:hover,
+td:hover {
+   background-color: khaki;
+   cursor: pointer;
+}
+
+
 
 .table-info {
    display: flex;

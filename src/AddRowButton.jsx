@@ -1,15 +1,13 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { parse_date } from "./core-funcs"
 
 export default function AddRowButton({ db_connection, meters, cols, tableNum, dispatch }) {
-   const table_loaded = meters.table.length > 0
-   const table_editable = table_loaded && meters.editable
-
    const denialInfo = useRef()
    const newEntry = useRef()
-
+   const repetitionNotice = useRef()
+   const [repeatedMeter, setRepeatedMeter] = useState(null)
    const open_modal = () => {
-      if (table_editable)
+      if (meters.editable)
       {
          newEntry.current.showModal()
       }
@@ -22,17 +20,25 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
       const row_data = Object.fromEntries(new FormData(submit_ev.target))
       const copy = structuredClone(meters)
       const data_cols = cols.filter(col => col.is_data).map(col => col.name)
-      const row = create_row(data_cols, row_data)
-      copy.table.push(row)
+      const new_row = create_row(data_cols, row_data)
+      const meter_repeated = copy.table.some(row => row.medidor === new_row.medidor)
+      if (meter_repeated)
+      {
+         setRepeatedMeter(new_row.medidor)
+         repetitionNotice.current.showModal()
+         return
+      }
+      copy.table.push(new_row)
       db_connection.put("meters", tableNum, copy)
       dispatch({ type: "ADD_ROW", copy })
+      submit_ev.target.reset()
    }
    return (
       <>
          <button
             type="button"
             title="Agregar fila"
-            className={table_editable ? "ok-btn icon-btn" : "not-ok-btn icon-btn"}
+            className={meters.editable ? "ok-btn icon-btn" : "not-ok-btn icon-btn"}
             onClick={open_modal}
          >
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px">
@@ -45,12 +51,18 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
                <button type="submit" className="text-btn ok-btn">Aceptar</button>
             </form>
          </dialog>
+         <dialog ref={repetitionNotice}>
+            <form method="dialog" className="denial-info">
+               <p>Error: No se agregó la fila porque cada fila debe tener un número de medidor diferente, y el medidor {repeatedMeter} ya existe.</p>
+               <button type="submit" className="text-btn ok-btn">Aceptar</button>
+            </form>
+         </dialog>
          <dialog ref={newEntry}>
             <form method="dialog" className="new-entry" onSubmit={add_row}>
                <h2 className="dialog-title">Agregar fila</h2>
                <label className="control">
                   <span>Medidor:</span>
-                  <input type="text" name="medidor" />
+                  <input type="text" name="medidor" required />
                </label>
                <label className="control">
                   <span>Titular:</span>
@@ -58,11 +70,11 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
                </label>
                <label className="control">
                   <span>Pimera lectura:</span>
-                  <input type="number" min="0" name="anterior" />
+                  <input type="number" min="0" name="anterior" required />
                </label>
                <label className="control">
                   <span>Fecha de primera lectura:</span>
-                  <input type="date" name="desde" />
+                  <input type="date" name="desde" required />
                </label>
                <label className="control">
                   <span>Zona:</span>

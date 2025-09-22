@@ -101,6 +101,7 @@ export function useLocalStorage(key, init_val = null) {
       return saved === null && init_val !== undefined ? init_val : saved
    })
    useEffect(() => {
+      console.log("Hit local storage!")
       if (val === undefined) throw new TypeError("Attempt to store undefined in localStorage!")
       localStorage.setItem(key, JSON.stringify(val))
    }, [key, val])

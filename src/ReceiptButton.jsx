@@ -8,8 +8,10 @@ export default function ReceiptButton({ receiptNum, setReceiptNum }) {
    const close_modal = () => {
       next_receipt_modal.current.close()
    }
-   const change_next_receipt = () => {
-
+   const change_next_receipt = submit_ev => {
+      const { next_receipt } = Object.fromEntries(new FormData(submit_ev.target))
+      setReceiptNum(next_receipt)
+      submit_ev.target.reset()
    }
    return (
       <>
@@ -29,7 +31,7 @@ export default function ReceiptButton({ receiptNum, setReceiptNum }) {
                </label>
                <label className="control">
                   <span>Nuevo valor:</span>
-                  <input type="number" min="0" />
+                  <input type="number" min="0" name="next_receipt" required />
                </label>
                <div className="accept-cancel">
                   <button type="submit" className="text-btn ok-btn">Aceptar</button>

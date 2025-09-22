@@ -1,13 +1,18 @@
-export default function MetersTable({ keys, filtered_indexes, tableNum, filter, children }) {
-   const is_latest_table = tableNum === keys.at(-1)
+export default function MetersTable({ meters, filtered_indexes, filter, receiptNum, children }) {
    const table_classes = ["meters-table"]
-   table_classes.push(is_latest_table ? "latest-table" : "old-table")
+   table_classes.push(meters.editable ? "latest-table" : "old-table")
    if (filter.length > 0) table_classes.push("filter-applied")
    return (
-      <table className={table_classes.join(" ")}>
-         <caption>Filas: {filtered_indexes.length}</caption>
-         {children}
-      </table>
+      <>
+         <div className="table-info">
+            <span>Filas: {filtered_indexes.length}</span>
+            <span>Último día de pago: {meters.last_pay_day ?? "Indefinido"}</span>
+            <span>Siguiente recibo: {receiptNum ?? "Indefinido"}</span>
+         </div>
+         <table className={table_classes.join(" ")}>
+            {children}
+         </table>
+      </>
    )
 }
 //? La tabla más reciente solo puede cerrarse si hay fecha de pago, y solo hasta después de esa fecha.

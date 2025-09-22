@@ -11,39 +11,25 @@ import TBody from "./TBody.jsx"
 import reducer from "./reducer.js"
 import { filter_indexes, set_initial_data } from "./core-funcs.js"
 import { useIDB, useKeys, useLocalStorage } from "./custom-hooks.js"
-
-const cols = [
-   "fila",
-   "medidor",
-   "titular",
-   "anterior",
-   "desde",
-   "actual",
-   "hasta",
-   "recibo",
-   "pago",
-   "deuda",
-   "multa",
-   "zona",
-   "caserío"
-]
+import ReceiptButton from "./ReceiptButton.jsx"
 
 export default function Meters() {
-   const [shownCols, setShownCols] = useLocalStorage("shown_cols", {
-      fila: true,
-      medidor: true,
-      titular: true,
-      anterior: true,
-      desde: true,
-      actual: true,
-      hasta: true,
-      recibo: true,
-      pago: true,
-      deuda: true,
-      multa: true,
-      zona: true,
-      caserío: true
-   })
+   const [cols, setCols] = useLocalStorage("cols", [
+      { name: "fila", visible: true, type: "Number", is_data: false },
+      { name: "medidor", visible: true, type: "String", is_data: true },
+      { name: "titular", visible: true, type: "String", is_data: true },
+      { name: "anterior", visible: true, type: "Number", is_data: true },
+      { name: "desde", visible: true, type: "Date", is_data: true },
+      { name: "actual", visible: true, type: "Number", is_data: true },
+      { name: "hasta", visible: true, type: "Date", is_data: true },
+      { name: "recibo", visible: true, type: "Number", is_data: true },
+      { name: "pago", visible: true, type: "Number", is_data: true },
+      { name: "deuda", visible: true, type: "Number", is_data: true },
+      { name: "multa", visible: true, type: "Number", is_data: true },
+      { name: "zona", visible: true, type: "String", is_data: true },
+      { name: "caserío", visible: true, type: "String", is_data: true },
+   ])
+   const [receiptNum, setReceiptNum] = useLocalStorage("receipt_num", null)
 
    const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
    const [meters, dispatch] = useReducer(reducer, {
@@ -55,7 +41,7 @@ export default function Meters() {
    const [tableNum, setTableNum] = useState(null)
    const [filter, setFilter] = useState("")
 
-   const filtered_cols = cols.filter(col => shownCols[col])
+   const filtered_cols = cols.filter(col => col.visible).map(col => col.name)
    const filtered_indexes = filter_indexes(meters.table, filtered_cols, filter)
    //! See if the 2 lines below leak memory by opening several connections, in which case, they should be in the parent component:
    const db_connection = useIDB("meters", 1, set_initial_data)
@@ -77,23 +63,17 @@ export default function Meters() {
       }
    }, [tableNum])
 
-   // useEffect(() => {
-   //    if (db_connection)
-   //    {
-   //       db_connection.put("meters", meters)
-   //    }
-   // }, [db_connection, meters])
-
    return (
       <main>
          <MetersMenu>
             <TableSelect {...{ keys, tableNum, setTableNum }} />
             <TableFilter {...{ filter, setFilter }} />
             <DownloadButton {...{ meters }} />
-            <AddRowButton {...{ db_connection, meters, tableNum, dispatch }} />
-            <ColSwitches {...{ cols, shownCols, setShownCols }} />
+            <AddRowButton {...{ db_connection, meters, cols, tableNum, dispatch }} />
+            <ReceiptButton {...{ receiptNum, setReceiptNum }} />
+            <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
-         <MetersTable {...{ keys, filtered_indexes, tableNum, filter }}>
+         <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
             <THead {...{ filtered_cols }} />
             <TBody {...{ meters, filtered_indexes, filtered_cols }} />
          </MetersTable>

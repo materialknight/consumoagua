@@ -1,7 +1,7 @@
 export default function TableFilter({ filter, setFilter }) {
    return (
       <label className="control">
-         <span className="label-span">Filtrar:</span>
+         <span>Filtrar:</span>
          <input
             type="search"
             value={filter}

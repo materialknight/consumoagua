@@ -25,6 +25,8 @@ body {
    --spacing: 0.5rem;
    --inclusive-color: forestgreen;
    --exclusive-color: crimson;
+   --shortened-width: 225px;
+   --grid-modal-gap: 12px;
 
    padding: var(--spacing);
 }
@@ -42,10 +44,16 @@ input {
 /* Table styles */
 
 td,
-th,
-caption {
-   padding-top: 2px;
-   padding-bottom: 2px;
+th {
+   padding-top: 3px;
+   padding-bottom: 3px;
+}
+
+.table-info {
+   display: flex;
+   justify-content: space-evenly;
+   padding-top: 5px;
+   padding-bottom: 5px;
 }
 
 /* Button styles */
@@ -62,6 +70,19 @@ button {
 .text-btn {
    padding: 6px;
 }
+
+.neutral-btn {
+   background-color: aliceblue;
+}
+
+.neutral-btn:hover {
+   background-color: cornsilk;
+}
+
+.neutral-btn:active {
+   background-color: burlywood;
+}
+
 
 .ok-btn {
    background-color: aquamarine;
@@ -89,6 +110,15 @@ button {
 
 /* Modal styles */
 
+.dialog-title {
+   margin: 0;
+}
+
+.long-dialog-title {
+   margin: 0;
+   text-align: center;
+}
+
 .denial-info {
    display: grid;
    justify-items: center;
@@ -96,12 +126,26 @@ button {
 
 .new-entry {
    display: grid;
+   gap: var(--grid-modal-gap);
+}
+
+.shortened {
+   width: var(--shortened-width)
+}
+
+.receipt-num {
+   display: grid;
+   gap: var(--grid-modal-gap);
+
+   :first-child {
+      grid-column: 1 / -1;
+   }
 }
 
 .accept-cancel {
    display: flex;
    justify-content: space-evenly;
-   padding-top: 14px;
+   padding-top: 3px;
 }
 
 /* Input styles */
@@ -125,9 +169,5 @@ select:hover {
 
 .control {
    display: grid;
-}
-
-.label-span {
-   padding-top: 3px;
-   padding-bottom: 3px;
+   gap: 6px;
 }

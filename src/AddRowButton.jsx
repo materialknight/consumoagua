@@ -1,7 +1,7 @@
 import { useRef } from "react"
 import { parse_date } from "./core-funcs"
 
-export default function AddRowButton({ db_connection, meters, tableNum, dispatch }) {
+export default function AddRowButton({ db_connection, meters, cols, tableNum, dispatch }) {
    const table_loaded = meters.table.length > 0
    const table_editable = table_loaded && meters.editable
 
@@ -21,7 +21,9 @@ export default function AddRowButton({ db_connection, meters, tableNum, dispatch
    const add_row = (submit_ev) => {
       const row_data = Object.fromEntries(new FormData(submit_ev.target))
       const copy = structuredClone(meters)
-      copy.table.push(create_row(row_data))
+      const data_cols = cols.filter(col => col.is_data).map(col => col.name)
+      const row = create_row(data_cols, row_data)
+      copy.table.push(row)
       db_connection.put("meters", tableNum, copy)
       dispatch({ type: "ADD_ROW", copy })
    }
@@ -45,28 +47,29 @@ export default function AddRowButton({ db_connection, meters, tableNum, dispatch
          </dialog>
          <dialog ref={newEntry}>
             <form method="dialog" className="new-entry" onSubmit={add_row}>
+               <h2 className="dialog-title">Agregar fila</h2>
                <label className="control">
-                  <span className="label-span">Medidor:</span>
+                  <span>Medidor:</span>
                   <input type="text" name="medidor" />
                </label>
                <label className="control">
-                  <span className="label-span">Titular:</span>
+                  <span>Titular:</span>
                   <input type="text" name="titular" />
                </label>
                <label className="control">
-                  <span className="label-span">Pimera lectura:</span>
+                  <span>Pimera lectura:</span>
                   <input type="number" min="0" name="anterior" />
                </label>
                <label className="control">
-                  <span className="label-span">Fecha de primera lectura:</span>
+                  <span>Fecha de primera lectura:</span>
                   <input type="date" name="desde" />
                </label>
                <label className="control">
-                  <span className="label-span">Zona:</span>
+                  <span>Zona:</span>
                   <input type="text" name="zona" />
                </label>
                <label className="control">
-                  <span className="label-span">Caserío:</span>
+                  <span>Caserío:</span>
                   <input type="text" name="caserío" />
                </label>
                <div className="accept-cancel">
@@ -83,15 +86,13 @@ export default function AddRowButton({ db_connection, meters, tableNum, dispatch
    )
 }
 
-function create_row(form_data) {
-   const cols = ["medidor", "titular", "anterior", "desde", "actual", "hasta", "recibo", "pago", "deuda", "multa", "zona", "caserío"]
+function create_row(data_cols, form_data) {
    const row = {}
-   for (const col of cols)
+   for (const col of data_cols)
    {
       switch (col)
       {
-         case "medidor":
-            row[col] = form_data[col]
+         case "medidor": row[col] = form_data[col]
             break
          case "titular":
             row[col] = form_data[col]

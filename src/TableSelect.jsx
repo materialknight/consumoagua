@@ -3,7 +3,7 @@ export default function TableSelect({ keys, tableNum, setTableNum }) {
    const last_table_selected = tableNum === keys.at(-1)
    return (
       <label className="control">
-         <span className="label-span">Tabla</span>
+         <span>Tabla</span>
          <select
             value={tableNum ?? ""}
             title="Elegir tabla"

@@ -125,7 +125,7 @@ function create_row(data_cols, form_data) {
             row[col] = null
             break
          case "pago":
-            row[col] = "pendiente"
+            row[col] = null
             break
          case "deuda":
             row[col] = 0

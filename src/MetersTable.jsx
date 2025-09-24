@@ -5,7 +5,7 @@ export default function MetersTable({ meters, filtered_indexes, filter, receiptN
    return (
       <>
          <div className="table-info">
-            <span>Filas: {filtered_indexes.length}</span>
+            <span>Filas visibles: {filtered_indexes.length} / {meters.table.length}</span>
             <span>Último día de pago: {meters.last_pay_day ?? "Indefinido"}</span>
             <span>Siguiente recibo: {receiptNum ?? "Indefinido"}</span>
          </div>

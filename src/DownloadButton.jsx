@@ -2,14 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { create_table_URL, name_file } from "./core-funcs.js"
 
 export default function DownloadButton({ meters }) {
-   const table_loaded = meters.table.length > 0
-   const table_downloadable = table_loaded && !meters.editable
-
    const [objURL, setObjURL] = useState(null)
    const [fileName, setFileName] = useState(null)
 
    useEffect(() => {
-      if (table_downloadable)
+      if (meters.table.length > 0 && !meters.editable)
       {
          const meters_URL = create_table_URL(meters)
          setObjURL(meters_URL)
@@ -22,7 +19,7 @@ export default function DownloadButton({ meters }) {
       {
          setObjURL(null)
       }
-   }, [table_downloadable, meters])
+   }, [meters])
 
    const downloadLink = useRef()
    const denialInfo = useRef()

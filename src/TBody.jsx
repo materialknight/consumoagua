@@ -7,7 +7,7 @@ export default function TBody({ meters, filtered_indexes, filtered_cols }) {
          let val = null
          if (col === "fila")
          {
-            val = i + 1
+            val = parseInt(index) + 1
          }
          else if (col === "desde" || col === "hasta")
          {

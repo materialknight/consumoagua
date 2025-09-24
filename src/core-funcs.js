@@ -31,7 +31,7 @@ export function filter_indexes(table, filtered_cols, filter) {
 
    const find_match = val => {
       let str_val = null
-      switch (val.constructor.name)
+      switch (val?.constructor.name)
       {
          case "String":
             str_val = val
@@ -41,6 +41,9 @@ export function filter_indexes(table, filtered_cols, filter) {
             break
          case "Date":
             str_val = display_date(val)
+            break
+         case undefined:
+            str_val = ""
             break
          default:
             throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
@@ -109,7 +112,9 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
    ]))
 
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
-   // Pendiente, Efectuado, Acumulado sin multa, acumulado con multa, exonerado.
+   const logo_store = db.createObjectStore("logo", { autoIncrement: true })
+   logo_store.add({ logo: null })
+
    // Test data below. Only 1 empty array should be added in production.
    meters_store.add({
       last_pay_day: null,
@@ -119,13 +124,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "010101",
             titular: "Tobías López",
             anterior: 10,
-            desde: new Date(2025, 0, 15),
             actual: 20,
+            desde: new Date(2025, 0, 15),
             hasta: new Date(2025, 1, 15),
             recibo: 12607,
             pago: "efectuado",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "1",
             caserío: "La Paz"
          },
@@ -133,13 +140,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "020202",
             titular: "Levi Menénez",
             anterior: 0,
-            desde: new Date(2025, 0, 15),
             actual: 15,
+            desde: new Date(2025, 0, 15),
             hasta: new Date(2025, 1, 15),
             recibo: 12607,
             pago: "efectuado",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "2",
             caserío: "El Progreso"
          },
@@ -147,13 +156,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "030303",
             titular: "Baruc Hernández",
             anterior: 20,
-            desde: new Date(2025, 0, 15),
             actual: 30,
+            desde: new Date(2025, 0, 15),
             hasta: new Date(2025, 1, 15),
             recibo: 12607,
             pago: "efectuado",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "3",
             caserío: "La Libertad"
          }
@@ -168,13 +179,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "010101",
             titular: "Tobías López",
             anterior: 20,
-            desde: new Date(2025, 1, 15),
             actual: 30,
+            desde: new Date(2025, 1, 15),
             hasta: new Date(2025, 2, 15),
             recibo: 12607,
             pago: "pendiente",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "1",
             caserío: "La Paz"
          },
@@ -182,13 +195,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "020202",
             titular: "Levi Menénez",
             anterior: 15,
-            desde: new Date(2025, 1, 15),
             actual: 40,
+            desde: new Date(2025, 1, 15),
             hasta: new Date(2025, 2, 15),
             recibo: 12607,
             pago: "pendiente",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "2",
             caserío: "El Progreso"
          },
@@ -196,13 +211,15 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "030303",
             titular: "Baruc Hernández",
             anterior: 30,
-            desde: new Date(2025, 1, 15),
             actual: 50,
+            desde: new Date(2025, 1, 15),
             hasta: new Date(2025, 2, 15),
             recibo: 12607,
             pago: "pendiente",
-            deuda: 0.00,
-            multa: 0.00,
+            deuda: 0,
+            multa: 0,
+            otros: 0,
+            crédito: 0,
             zona: "3",
             caserío: "La Libertad"
          }

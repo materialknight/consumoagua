@@ -25,7 +25,7 @@ export default function DownloadButton({ meters }) {
    const denialInfo = useRef()
 
    const download_table = () => {
-      if (table_downloadable && objURL)
+      if (meters.table.length > 0 && !meters.editable && objURL)
       {
          downloadLink.current.click()
       }

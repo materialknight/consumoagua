@@ -1,18 +1,23 @@
+// Hooks:
 import { useEffect, useReducer, useState } from "react"
+import { useLocalStorage } from "./custom-hooks.js"
+// Button components:
+import DownloadButton from "./DownloadButton.jsx"
+import AddRowButton from "./AddRowButton.jsx"
+import ReceiptButton from "./ReceiptButton.jsx"
+import DateButton from "./DateButton.jsx"
+import LogoButton from "./LogoButton.jsx"
+// Other components:
 import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
 import TableFilter from "./TableFilter.jsx"
-import DownloadButton from "./DownloadButton.jsx"
-import AddRowButton from "./AddRowButton.jsx"
 import ColSwitches from "./ColSwitches.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
 import reducer from "./reducer.js"
+// Utilities:
 import { filter_indexes } from "./core-funcs.js"
-import { useLocalStorage } from "./custom-hooks.js"
-import ReceiptButton from "./ReceiptButton.jsx"
-import LogoButton from "./LogoButton.jsx"
 
 export default function Meters({ db_connection, keys }) {
    const [cols, setCols] = useLocalStorage("cols", [
@@ -31,6 +36,13 @@ export default function Meters({ db_connection, keys }) {
       { name: "caserío", visible: true, type: "String", is_data: true },
    ])
    const [receiptNum, setReceiptNum] = useLocalStorage("receipt_num", null)
+   const [dateFormat, setDateFormat] = useLocalStorage("date_format", {
+      weekday: "short",
+      day: "numeric",
+      year: "2-digit",
+      month: "short"
+   })
+
    const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
    const [meters, dispatch] = useReducer(reducer, {
       table: [],
@@ -42,7 +54,7 @@ export default function Meters({ db_connection, keys }) {
    const [filter, setFilter] = useState("")
 
    const filtered_cols = cols.filter(col => col.visible).map(col => col.name)
-   const filtered_indexes = filter_indexes(meters.table, filtered_cols, filter)
+   const filtered_indexes = filter_indexes(meters.table, filtered_cols, filter, dateFormat)
 
    useEffect(() => {
       if (keys.length > 0)
@@ -60,6 +72,8 @@ export default function Meters({ db_connection, keys }) {
       }
    }, [tableNum])
 
+   const [sorting, setSorting] = useState({ col: null, order: "default" })
+
    return (
       <>
          <MetersMenu>
@@ -67,6 +81,7 @@ export default function Meters({ db_connection, keys }) {
             <TableFilter {...{ filter, setFilter }} />
             <DownloadButton {...{ meters }} />
             <AddRowButton {...{ db_connection, meters, cols, tableNum, dispatch }} />
+            <DateButton {...{ dateFormat, setDateFormat }} />
             <ReceiptButton {...{ receiptNum, setReceiptNum }} />
             <LogoButton {...{ db_connection }} />
             <ColSwitches {...{ cols, setCols }} />
@@ -74,7 +89,7 @@ export default function Meters({ db_connection, keys }) {
          <main>
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
                <THead {...{ filtered_cols }} />
-               <TBody {...{ meters, filtered_indexes, filtered_cols }} />
+               <TBody {...{ meters, filtered_indexes, filtered_cols, dateFormat }} />
             </MetersTable>
          </main>
       </>

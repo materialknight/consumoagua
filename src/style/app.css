@@ -150,7 +150,8 @@ button {
    justify-items: center;
 }
 
-.new-entry {
+.new-entry,
+.date-form {
    display: grid;
    gap: var(--grid-modal-gap);
 }

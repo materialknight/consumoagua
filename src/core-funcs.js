@@ -26,7 +26,7 @@ export function stringify_date(date) {
    return year.concat("-", month, "-", day)
 }
 
-export function filter_indexes(table, filtered_cols, filter) {
+export function filter_indexes(table, filtered_cols, filter, dateFormat) {
    if (filter.length < 1) return Object.keys(table)
 
    const find_match = val => {
@@ -40,7 +40,7 @@ export function filter_indexes(table, filtered_cols, filter) {
             str_val = val.toString()
             break
          case "Date":
-            str_val = display_date(val)
+            str_val = display_date(val, dateFormat)
             break
          case undefined:
             str_val = ""
@@ -211,11 +211,11 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
             medidor: "030303",
             titular: "Baruc Hernández",
             anterior: 30,
-            actual: 50,
+            actual: null,
             desde: new Date(2025, 1, 15),
-            hasta: new Date(2025, 2, 15),
-            recibo: 12607,
-            pago: "pendiente",
+            hasta: null,
+            recibo: null,
+            pago: null,
             deuda: 0,
             multa: 0,
             otros: 0,

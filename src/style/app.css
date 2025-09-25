@@ -42,6 +42,11 @@ input {
 }
 
 /* Table styles */
+th {
+   position: sticky;
+   top: 0;
+   background-color: aliceblue;
+}
 
 /* ESTILO EN DUDA: */
 tr:hover {
@@ -63,8 +68,6 @@ td:hover {
    background-color: khaki;
    cursor: pointer;
 }
-
-
 
 .table-info {
    display: flex;

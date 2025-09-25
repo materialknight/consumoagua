@@ -46,8 +46,7 @@ export function filter_indexes(table, filtered_cols, filter, dateFormat) {
             str_val = ""
             break
          default:
-            throw new TypeError(`Unexpected type: ${val.constructor.name}, value: ${val}`)
-
+            throw new TypeError(`Unexpected type: ${val?.constructor.name ?? val}, value: ${val}`)
       }
       str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
       const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
@@ -110,6 +109,24 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
       { mínimo: 151, máximo: 200, fórmula: "1.25 * consumo + 1.60" },
       { mínimo: 201, máximo: null, fórmula: "1.50 * consumo + 1.60" }
    ]))
+
+   // localStorage.setItem("cols", JSON.stringify([
+   //    { name: "fila", visible: true, type: "Number", is_data: false },
+   //    { name: "medidor", visible: true, type: "String", is_data: true },
+   //    { name: "titular", visible: true, type: "String", is_data: true },
+   //    { name: "anterior", visible: true, type: "Number", is_data: true },
+   //    { name: "actual", visible: true, type: "Number", is_data: true },
+   //    { name: "desde", visible: true, type: "Date", is_data: true },
+   //    { name: "hasta", visible: true, type: "Date", is_data: true },
+   //    { name: "recibo", visible: true, type: "Number", is_data: true },
+   //    { name: "pago", visible: true, type: "Number", is_data: true },
+   //    { name: "deuda", visible: true, type: "Number", is_data: true },
+   //    { name: "multa", visible: true, type: "Number", is_data: true },
+   //    { name: "otros", visible: true, type: "Number", is_data: true },
+   //    { name: "crédito", visible: true, type: "Number", is_data: true },
+   //    { name: "zona", visible: true, type: "String", is_data: true },
+   //    { name: "caserío", visible: true, type: "String", is_data: true },
+   // ]))
 
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
    const logo_store = db.createObjectStore("logo", { autoIncrement: true })

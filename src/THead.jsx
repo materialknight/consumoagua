@@ -1,5 +1,12 @@
-export default function THead({ filtered_cols }) {
-   const THs = filtered_cols.map(col => <th key={col} data-col={col}>{col}</th>)
+export default function THead({ filtered_cols, setSorting }) {
+   const change_sorting = click_ev => {
+      setSorting(prev => {
+         const col = click_ev.target.dataset.col
+         const asc = !prev.asc
+         return { col, asc }
+      })
+   }
+   const THs = filtered_cols.map(col => <th key={col} data-col={col} onClick={change_sorting}>{col}</th>)
    return (
       <thead>
          <tr data-row="0">{THs}</tr>

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { parse_date } from "./core-funcs"
 
 export default function AddRowButton({ db_connection, meters, cols, tableNum, dispatch }) {
@@ -6,6 +6,14 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
    const newEntry = useRef()
    const repetitionNotice = useRef()
    const [repeatedMeter, setRepeatedMeter] = useState(null)
+   const [zones, setZones] = useState(new Set())
+   const [villages, setVillages] = useState(new Set())
+   useEffect(() => {
+      const unique_zones = new Set(meters.table.map(row => row.zona))
+      const unique_villages = new Set(meters.table.map(row => row["caserío"]))
+      setZones(unique_zones)
+      setVillages(unique_villages)
+   }, [meters])
    const open_modal = () => {
       if (meters.editable)
       {
@@ -19,7 +27,7 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
    const add_row = (submit_ev) => {
       const row_data = Object.fromEntries(new FormData(submit_ev.target))
       const copy = structuredClone(meters)
-      const data_cols = cols.filter(col => col.is_data).map(col => col.name)
+      const data_cols = cols.filter(col => col.is_data)
       const new_row = create_row(data_cols, row_data)
       const meter_repeated = copy.table.some(row => row.medidor === new_row.medidor)
       if (meter_repeated)
@@ -78,12 +86,18 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
                </label>
                <label className="control">
                   <span>Zona:</span>
-                  <input type="text" name="zona" />
+                  <input type="text" name="zona" list="zones" />
                </label>
+               <datalist id="zones">
+                  {Array.from(zones).map((zone, i) => <option key={i} value={zone}></option>)}
+               </datalist>
                <label className="control">
                   <span>Caserío:</span>
-                  <input type="text" name="caserío" />
+                  <input type="text" name="caserío" list="villages" />
                </label>
+               <datalist id="villages">
+                  {Array.from(villages).map((village, i) => <option key={i} value={village}></option>)}
+               </datalist>
                <div className="accept-cancel">
                   <button type="submit" className="text-btn ok-btn">Aceptar</button>
                   <button type="button" className="text-btn not-ok-btn" onClick={() => {
@@ -102,45 +116,20 @@ function create_row(data_cols, form_data) {
    const row = {}
    for (const col of data_cols)
    {
-      switch (col)
+      switch (col.type)
       {
-         case "medidor": row[col] = form_data[col]
+         case "String":
+            row[col.name] = col.name in form_data ? form_data[col.name] : col.init
             break
-         case "titular":
-            row[col] = form_data[col]
+         case "Number":
+            row[col.name] = col.name in form_data ? parseInt(form_data[col.name]) : col.init
             break
-         case "anterior":
-            row[col] = parseInt(form_data[col])
-            break
-         case "desde":
-            row[col] = parse_date(form_data[col])
-            break
-         case "actual":
-            row[col] = null
-            break
-         case "hasta":
-            row[col] = null
-            break
-         case "recibo":
-            row[col] = null
-            break
-         case "pago":
-            row[col] = null
-            break
-         case "deuda":
-            row[col] = 0
-            break
-         case "multa":
-            row[col] = 0
-            break
-         case "zona":
-            row[col] = form_data[col]
-            break
-         case "caserío":
-            row[col] = form_data[col]
+         case "Date":
+            row[col.name] = col.name in form_data ? parse_date(form_data[col.name]) : col.init
             break
          default:
-            throw new TypeError("Unexpected column name!")
+            throw new TypeError("Unexpected column type!")
+
       }
    }
    return row

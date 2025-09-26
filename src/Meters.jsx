@@ -1,5 +1,5 @@
 // Hooks:
-import { useEffect, useReducer, useState } from "react"
+import { useEffect, useReducer, useState, useRef } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
 // Button components:
 import DownloadButton from "./DownloadButton.jsx"
@@ -7,6 +7,9 @@ import AddRowButton from "./AddRowButton.jsx"
 import ReceiptButton from "./ReceiptButton.jsx"
 import DateButton from "./DateButton.jsx"
 import LogoButton from "./LogoButton.jsx"
+// Modals:
+import EditCellForm from "./EditCellForm.jsx"
+import ReadingForm from "./ReadingForm.jsx"
 // Other components:
 import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
@@ -56,8 +59,8 @@ export default function Meters({ db_connection, keys }) {
    const [sorting, setSorting] = useState({ col: "fila", asc: true })
 
    const sorting_col_type = cols.find(col => col.name === sorting.col).type
-   const filtered_cols = cols.filter(col => col.visible).map(col => col.name)
-   const filtered_indexes = filter_indexes(meters.table, filtered_cols, filter, dateFormat).toSorted((i_A, i_B) => {
+   const visible_cols = cols.filter(col => col.visible).map(col => col.name)
+   const filtered_indexes = filter_indexes(meters.table, visible_cols, filter, dateFormat).toSorted((i_A, i_B) => {
       if (sorting.col === "fila")
       {
          return sorting.asc ? i_A - i_B : i_B - i_A
@@ -92,22 +95,36 @@ export default function Meters({ db_connection, keys }) {
       }
    }, [tableNum])
 
+   const editCellForm = useRef()
+   const [editable, setEditable] = useState(null)
+   const readingForm = useRef()
+   const data_cols = cols.filter(col => col.is_data)
+
+   const ob = {
+      row: "the row to be edited",
+      col: "the column name to be edited",
+      val: "current cell value",
+
+   }
+
    return (
       <>
          <MetersMenu>
             <TableSelect {...{ keys, tableNum, setTableNum }} />
             <TableFilter {...{ filter, setFilter }} />
             <DownloadButton {...{ meters }} />
-            <AddRowButton {...{ db_connection, meters, cols, tableNum, dispatch }} />
+            <AddRowButton {...{ db_connection, meters, data_cols, tableNum, dispatch }} />
             <DateButton {...{ dateFormat, setDateFormat }} />
             <ReceiptButton {...{ receiptNum, setReceiptNum }} />
             <LogoButton {...{ db_connection }} />
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
+            <EditCellForm ref={editCellForm} {...{ editable, data_cols, dateFormat }} />
+            <ReadingForm ref={readingForm} />
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
-               <THead {...{ filtered_cols, setSorting }} />
-               <TBody {...{ meters, filtered_indexes, filtered_cols, dateFormat }} />
+               <THead {...{ visible_cols, setSorting }} />
+               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEditable, readingForm }} />
             </MetersTable>
          </main>
       </>

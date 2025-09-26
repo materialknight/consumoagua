@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react"
 import { parse_date } from "./core-funcs"
 
-export default function AddRowButton({ db_connection, meters, cols, tableNum, dispatch }) {
+export default function AddRowButton({ db_connection, meters, data_cols, tableNum, dispatch }) {
    const denialInfo = useRef()
    const newEntry = useRef()
    const repetitionNotice = useRef()
@@ -27,7 +27,7 @@ export default function AddRowButton({ db_connection, meters, cols, tableNum, di
    const add_row = (submit_ev) => {
       const row_data = Object.fromEntries(new FormData(submit_ev.target))
       const copy = structuredClone(meters)
-      const data_cols = cols.filter(col => col.is_data)
+      // const data_cols = cols.filter(col => col.is_data)
       const new_row = create_row(data_cols, row_data)
       const meter_repeated = copy.table.some(row => row.medidor === new_row.medidor)
       if (meter_repeated)

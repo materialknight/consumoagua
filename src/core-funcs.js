@@ -26,12 +26,13 @@ export function stringify_date(date) {
    return year.concat("-", month, "-", day)
 }
 
-export function filter_indexes(table, filtered_cols, filter, dateFormat) {
+export function filter_indexes(table, visible_cols, filter, dateFormat) {
    if (filter.length < 1) return Object.keys(table)
 
    const find_match = val => {
       let str_val = null
-      switch (val?.constructor.name)
+      let val_type = val === null ? null : val.constructor.name
+      switch (val_type)
       {
          case "String":
             str_val = val
@@ -42,11 +43,11 @@ export function filter_indexes(table, filtered_cols, filter, dateFormat) {
          case "Date":
             str_val = display_date(val, dateFormat)
             break
-         case undefined:
+         case null:
             str_val = ""
             break
          default:
-            throw new TypeError(`Unexpected type: ${val?.constructor.name ?? val}, value: ${val}`)
+            throw new TypeError(`Unexpected type: ${val_type}, value: ${val}`)
       }
       str_val = str_val.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
       const normalized_filter = filter.toLowerCase().replaceAll(/[áéíóúñ]/g, remove_diacritic)
@@ -54,7 +55,7 @@ export function filter_indexes(table, filtered_cols, filter, dateFormat) {
 
    }
    return table.reduce((indexes, row, i) => {
-      const shown_vals = filtered_cols.filter(col => col !== "fila").map(col => row[col])
+      const shown_vals = visible_cols.filter(col => col !== "fila").map(col => row[col])
       if (shown_vals.some(find_match))
       {
          indexes.push(i)

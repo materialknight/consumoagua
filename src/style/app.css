@@ -54,7 +54,7 @@ tr:hover {
    outline-width: 2px;
    outline-style: solid;
    outline-color: blueviolet;
-   outline-offset: 1px;
+   /* outline-offset: 1px; */
 }
 
 td,
@@ -139,6 +139,10 @@ button {
 
 /* Modal styles */
 
+.highlighted {
+   background-color: yellow;
+}
+
 .dialog-title {
    margin: 0;
 }
@@ -154,9 +158,45 @@ button {
 }
 
 .new-entry,
-.date-form {
+.date-form,
+.edit-cell-form {
    display: grid;
    gap: var(--grid-modal-gap);
+}
+
+.row-info {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+
+   div {
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      border: 1px solid green;
+      padding: 3px;
+   }
+}
+
+.edit-grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   justify-items: stretch;
+   border: 1px solid green;
+
+   div {
+      display: grid;
+      gap: 6px;
+      justify-items: center;
+      padding: 12px;
+   }
+
+   div:first-child {
+      border-right: 1px solid green;
+   }
+
+   div:last-child {
+      border-left: 1px solid green;
+   }
 }
 
 .shortened {

@@ -1,7 +1,7 @@
 // Hooks:
 import { useEffect, useReducer, useState, useRef } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
-// Button components:
+// Buttons:
 import DownloadButton from "./DownloadButton.jsx"
 import AddRowButton from "./AddRowButton.jsx"
 import ReceiptButton from "./ReceiptButton.jsx"
@@ -42,10 +42,9 @@ export default function Meters({ db_connection, keys }) {
    ])
    const [receiptNum, setReceiptNum] = useLocalStorage("receipt_num", null)
    const [dateFormat, setDateFormat] = useLocalStorage("date_format", {
-      weekday: "short",
       day: "numeric",
-      year: "2-digit",
-      month: "short"
+      month: "short",
+      year: "2-digit"
    })
    const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
    const [meters, dispatch] = useReducer(reducer, {
@@ -100,13 +99,6 @@ export default function Meters({ db_connection, keys }) {
    const readingForm = useRef()
    const data_cols = cols.filter(col => col.is_data)
 
-   const ob = {
-      row: "the row to be edited",
-      col: "the column name to be edited",
-      val: "current cell value",
-
-   }
-
    return (
       <>
          <MetersMenu>
@@ -120,7 +112,7 @@ export default function Meters({ db_connection, keys }) {
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
-            <EditCellForm ref={editCellForm} {...{ editable, data_cols, dateFormat }} />
+            <EditCellForm ref={editCellForm} {...{ editable, data_cols, dateFormat, db_connection }} />
             <ReadingForm ref={readingForm} />
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
                <THead {...{ visible_cols, setSorting }} />

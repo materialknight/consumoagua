@@ -1,0 +1,31 @@
+/* Input styles */
+
+select {
+   padding: 3px;
+   cursor: pointer;
+}
+
+input {
+   padding: 3px;
+}
+
+select:hover {
+   background-color: aqua;
+}
+
+.latest-selection {
+   background-color: palegreen;
+}
+
+.old-selection {
+   background-color: pink;
+}
+
+.control {
+   display: grid;
+   gap: 6px;
+}
+
+.short-num-input {
+   width: 55px;
+}

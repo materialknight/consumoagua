@@ -1,0 +1,88 @@
+/* Table styles */
+th {
+   position: sticky;
+   top: 0;
+   background-color: aliceblue;
+}
+
+/* ESTILO EN DUDA: */
+tr:hover {
+   /* border: 2px solid red; */
+   outline-width: 2px;
+   outline-style: solid;
+   outline-color: blueviolet;
+   /* outline-offset: 1px; */
+}
+
+td,
+th {
+   padding: 3px;
+}
+
+th:hover,
+td:hover {
+   background-color: khaki;
+   cursor: pointer;
+}
+
+.table-info {
+   display: flex;
+   justify-content: space-evenly;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+
+.meters-table {
+   border-collapse: collapse;
+   text-align: center;
+   width: 100%;
+}
+
+.fees-table {
+   border-collapse: collapse;
+   text-align: center;
+   width: 100%;
+
+   th,
+   td {
+      border: 1px solid black;
+   }
+}
+
+.latest-table {
+
+   th,
+   td {
+      border: 1px solid black;
+   }
+
+   tbody {
+      tr:nth-child(odd) {
+         background-color: palegreen;
+      }
+   }
+
+}
+
+.old-table {
+
+   th,
+   td {
+      border: 1px solid crimson;
+   }
+
+   tbody {
+
+      tr:nth-child(odd) {
+         background-color: pink;
+      }
+
+      tr:nth-child(even) {
+         background-color: whitesmoke;
+      }
+   }
+}
+
+.filter-applied {
+   outline: 2px solid orange;
+}

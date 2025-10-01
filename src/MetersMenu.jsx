@@ -5,7 +5,7 @@ export default function MetersMenu({ children }) {
    return (
       <>
          <search className="meters-menu">
-            <button onClick={() => alert("Oh, hi!")}>Tomar lectura</button>
+            {/* <button onClick={() => alert("Oh, hi!")}>Tomar lectura</button> */}
             {children}
          </search>
          <dialog ref={dialogRef}>

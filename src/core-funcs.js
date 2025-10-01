@@ -6,6 +6,20 @@ export function name_file(table) {
    return month_1.concat("-", month_2, "-", year)
 }
 
+export function add_floats(a, b) {
+   const cents_A = Math.round(a * 100)
+   const cents_B = Math.round(b * 100)
+   const sum_cents = cents_A + cents_B
+   return sum_cents / 100
+}
+
+export function subtract_floats(a, b) {
+   const cents_A = Math.round(a * 100)
+   const cents_B = Math.round(b * 100)
+   const subtraction_cents = cents_A - cents_B
+   return subtraction_cents / 100
+}
+
 export function create_table_URL(meters) {
    const meters_clone = structuredClone(meters)
    for (const row of meters_clone.table)
@@ -110,24 +124,6 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
       { mínimo: 151, máximo: 200, fórmula: "1.25 * consumo + 1.60" },
       { mínimo: 201, máximo: null, fórmula: "1.50 * consumo + 1.60" }
    ]))
-
-   // localStorage.setItem("cols", JSON.stringify([
-   //    { name: "fila", visible: true, type: "Number", is_data: false },
-   //    { name: "medidor", visible: true, type: "String", is_data: true },
-   //    { name: "titular", visible: true, type: "String", is_data: true },
-   //    { name: "anterior", visible: true, type: "Number", is_data: true },
-   //    { name: "actual", visible: true, type: "Number", is_data: true },
-   //    { name: "desde", visible: true, type: "Date", is_data: true },
-   //    { name: "hasta", visible: true, type: "Date", is_data: true },
-   //    { name: "recibo", visible: true, type: "Number", is_data: true },
-   //    { name: "pago", visible: true, type: "Number", is_data: true },
-   //    { name: "deuda", visible: true, type: "Number", is_data: true },
-   //    { name: "multa", visible: true, type: "Number", is_data: true },
-   //    { name: "otros", visible: true, type: "Number", is_data: true },
-   //    { name: "crédito", visible: true, type: "Number", is_data: true },
-   //    { name: "zona", visible: true, type: "String", is_data: true },
-   //    { name: "caserío", visible: true, type: "String", is_data: true },
-   // ]))
 
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
    const logo_store = db.createObjectStore("logo", { autoIncrement: true })

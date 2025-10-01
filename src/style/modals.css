@@ -1,0 +1,128 @@
+/* Modal styles */
+
+.highlighted {
+   background-color: yellow;
+}
+
+.dialog-title {
+   margin: 0;
+}
+
+.long-dialog-title {
+   margin: 0;
+   text-align: center;
+}
+
+.denial-info {
+   display: grid;
+   justify-items: center;
+}
+
+.new-entry,
+.date-form,
+.edit-cell-form,
+.edit-fees-form {
+   display: grid;
+   gap: var(--grid-modal-gap);
+}
+
+.edit-fees-form {
+   :invalid {
+      background-color: pink;
+   }
+}
+
+.row-info {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+
+   div {
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      border: 1px solid green;
+      padding: 3px;
+   }
+}
+
+.fees-form {
+   display: grid;
+   grid-template-columns: auto auto auto;
+
+   div {
+      border: 1px solid green;
+      padding: 3px;
+   }
+}
+
+.edit-grid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   justify-items: stretch;
+   border: 1px solid green;
+
+   div {
+      display: grid;
+      gap: 6px;
+      justify-items: center;
+      padding: 12px;
+   }
+
+   div:first-child {
+      border-right: 1px solid green;
+   }
+
+   div:last-child {
+      border-left: 1px solid green;
+   }
+}
+
+.sample {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   justify-items: stretch;
+   border: 1px solid green;
+
+   div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+   }
+
+   div:first-child {
+      /* flex-grow: 1; */
+      border-right: 1px solid green;
+      /* grid-template-columns: 9fr 1fr 9fr; */
+   }
+
+   div:last-child {
+      /* flex-grow: 1; */
+      border-left: 1px solid green;
+      /* grid-template-columns: 1fr 1fr; */
+   }
+
+}
+
+.applied-formula {
+   background-color: orange;
+}
+
+.shortened {
+   width: var(--shortened-width)
+}
+
+.receipt-num {
+   display: grid;
+   gap: var(--grid-modal-gap);
+
+   :first-child {
+      grid-column: 1 / -1;
+   }
+}
+
+.accept-cancel {
+   display: flex;
+   justify-content: space-evenly;
+   padding-top: 3px;
+}

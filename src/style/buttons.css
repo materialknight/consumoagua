@@ -1,0 +1,66 @@
+/* Button styles */
+
+button {
+   border-width: 1px;
+   cursor: pointer;
+}
+
+.label-btn {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border: 1px solid black;
+   cursor: pointer;
+}
+
+.icon-btn {
+   width: 40px;
+   height: 40px;
+}
+
+.text-btn {
+   padding: 6px;
+}
+
+.icon-text-btn {
+   display: grid;
+   grid-template-columns: auto auto;
+   align-items: center;
+   height: 40px;
+}
+
+.neutral-btn {
+   background-color: aliceblue;
+}
+
+.neutral-btn:hover {
+   background-color: cornsilk;
+}
+
+.neutral-btn:active {
+   background-color: burlywood;
+}
+
+.ok-btn {
+   background-color: aquamarine;
+}
+
+.ok-btn:hover {
+   background-color: aqua;
+}
+
+.ok-btn:active {
+   background-color: lightgreen;
+}
+
+.not-ok-btn {
+   background-color: lightgray;
+}
+
+.not-ok-btn:hover {
+   background-color: pink;
+}
+
+.not-ok-btn:active {
+   background-color: darksalmon;
+}

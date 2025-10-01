@@ -1,7 +1,9 @@
 @import "./colSwitches.css";
-@import "./downloadButton.css";
 @import "./metersMenu.css";
-@import "./metersTable.css";
+@import "./tables.css";
+@import "./buttons.css";
+@import "./modals.css";
+@import "./inputs.css";
 
 body {
    font-family: var(--fonts);
@@ -38,210 +40,62 @@ select,
 input {
    font-family: var(--fonts);
    font-size: var(--fonts-size);
-   /* border-radius: 5px; */
 }
 
-/* Table styles */
-th {
-   position: sticky;
-   top: 0;
-   background-color: aliceblue;
+.tabs {
+   display: flex;
+
+   label:has(:checked) {
+      outline-width: 1px;
+      outline-style: solid;
+      outline-color: blueviolet;
+   }
+
+   label {
+      border: 1px solid black;
+      padding: 6px;
+   }
+
+   /* label:hover {
+      background-color: cornsilk;
+   } */
+
+   label:first-child {
+      background-color: honeydew;
+   }
+
+   label:last-child {
+      background-color: lavenderblush;
+   }
 }
 
-/* ESTILO EN DUDA: */
-tr:hover {
-   /* border: 2px solid red; */
-   outline-width: 2px;
-   outline-style: solid;
-   outline-color: blueviolet;
-   /* outline-offset: 1px; */
-}
+/* Menu styles: */
 
-td,
-th {
-   padding-top: 3px;
-   padding-bottom: 3px;
-}
-
-th:hover,
-td:hover {
-   background-color: khaki;
-   cursor: pointer;
-}
-
-.table-info {
+.meters-menu {
    display: flex;
    justify-content: space-evenly;
-   padding-top: 5px;
-   padding-bottom: 5px;
-}
 
-/* Button styles */
-
-.label-btn {
-   display: flex;
-   justify-content: center;
-   align-items: center;
+   background-color: honeydew;
    border: 1px solid black;
-   cursor: pointer;
+   padding-top: 12px;
+   padding-bottom: 12px;
+
 }
 
-button {
-   border-width: 1px;
-   cursor: pointer;
-}
-
-.icon-btn {
-   width: 40px;
-   height: 40px;
-}
-
-.text-btn {
-   padding: 6px;
-}
-
-.neutral-btn {
-   background-color: aliceblue;
-}
-
-.neutral-btn:hover {
-   background-color: cornsilk;
-}
-
-.neutral-btn:active {
-   background-color: burlywood;
-}
-
-
-.ok-btn {
-   background-color: aquamarine;
-}
-
-.ok-btn:hover {
-   background-color: aqua;
-}
-
-.ok-btn:active {
-   background-color: lightgreen;
-}
-
-.not-ok-btn {
-   background-color: lightgray;
-}
-
-.not-ok-btn:hover {
-   background-color: pink;
-}
-
-.not-ok-btn:active {
-   background-color: darksalmon;
-}
-
-/* Modal styles */
-
-.highlighted {
-   background-color: yellow;
-}
-
-.dialog-title {
-   margin: 0;
-}
-
-.long-dialog-title {
-   margin: 0;
-   text-align: center;
-}
-
-.denial-info {
-   display: grid;
-   justify-items: center;
-}
-
-.new-entry,
-.date-form,
-.edit-cell-form {
-   display: grid;
-   gap: var(--grid-modal-gap);
-}
-
-.row-info {
-   display: grid;
-   grid-template-columns: repeat(4, 1fr);
-
-   div {
-      display: grid;
-      gap: 5px;
-      justify-items: center;
-      border: 1px solid green;
-      padding: 3px;
-   }
-}
-
-.edit-grid {
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   justify-items: stretch;
-   border: 1px solid green;
-
-   div {
-      display: grid;
-      gap: 6px;
-      justify-items: center;
-      padding: 12px;
-   }
-
-   div:first-child {
-      border-right: 1px solid green;
-   }
-
-   div:last-child {
-      border-left: 1px solid green;
-   }
-}
-
-.shortened {
-   width: var(--shortened-width)
-}
-
-.receipt-num {
-   display: grid;
-   gap: var(--grid-modal-gap);
-
-   :first-child {
-      grid-column: 1 / -1;
-   }
-}
-
-.accept-cancel {
+.fees-menu {
    display: flex;
    justify-content: space-evenly;
-   padding-top: 3px;
+
+   background-color: lavenderblush;
+   border: 1px solid black;
+   padding-top: 12px;
+   padding-bottom: 12px;
 }
 
-/* Input styles */
-
-select {
-   padding: 3px;
-   cursor: pointer;
+.validated:invalid {
+   background-color: lightpink;
 }
 
-input {
-   padding: 3px;
-}
-
-select:hover {
-   background-color: aqua;
-}
-
-.latest-selection {
-   background-color: palegreen;
-}
-
-.old-selection {
-   background-color: pink;
-}
-
-.control {
-   display: grid;
-   gap: 6px;
+.validated:valid {
+   background-color: lightgreen;
 }

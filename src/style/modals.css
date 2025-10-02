@@ -21,7 +21,8 @@
 .new-entry,
 .date-form,
 .edit-cell-form,
-.edit-fees-form {
+.edit-fees-form,
+.brand-form {
    display: grid;
    gap: var(--grid-modal-gap);
 }

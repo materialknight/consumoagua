@@ -126,8 +126,8 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
    ]))
 
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
-   const logo_store = db.createObjectStore("logo", { autoIncrement: true })
-   logo_store.add({ logo: null })
+   const brand_store = db.createObjectStore("logo", { autoIncrement: true })
+   brand_store.add({ file: null })
 
    // Test data below. Only 1 empty array should be added in production.
    meters_store.add({

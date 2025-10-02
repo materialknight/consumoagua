@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react"
 import { useIDB, useKeys, useLocalStorage } from "./custom-hooks.js"
 // Components:
+import AppHeader from "./AppHeader.jsx"
+import Logo from "./Logo.jsx"
 import Meters from "./Meters.jsx"
 import Fees from "./Fees.jsx"
 // Utils:
@@ -18,22 +20,11 @@ export default function App() {
          case "fees": return <Fees />
       }
    }
-   const [logo, setLogo] = useState(null)
-   useEffect(() => {
-      if (db_connection)
-      {
-         db_connection.get("logo", 1).then(saved_logo => {
-            setLogo(saved_logo.logo)
-         })
-      }
-   }, [db_connection])
    return (
       <>
-         <header>
-            <h1>Registro de consumo de agua</h1>
-            <img src={logo} alt="logo" title="logo" />
-            {/* <img src="icons/favicon.png" alt="JAAP logo" style="max-width:8vw; padding-top: 1%;"> */}
-         </header>
+         <AppHeader db_connection={db_connection}>
+            <Logo db_connection={db_connection} />
+         </AppHeader>
          <div className="tabs">
             <label>
                <span>Lecturas</span>

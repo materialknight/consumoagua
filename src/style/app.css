@@ -31,6 +31,7 @@ body {
    --grid-modal-gap: 12px;
 
    padding: var(--spacing);
+   background-color: ghostwhite;
 }
 
 /* Force font into elements that don't inherit it from the body ancestor. */
@@ -40,6 +41,38 @@ select,
 input {
    font-family: var(--fonts);
    font-size: var(--fonts-size);
+}
+
+.app-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+
+
+   .titles {
+      display: grid;
+      gap: 3px;
+
+      h1 {
+         font-size: 27px;
+         margin: 0;
+      }
+
+      h2,
+      h3 {
+         margin: 0;
+      }
+   }
+
+   .logo {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+   }
+}
+
+.centered-text {
+   text-align: center;
 }
 
 .tabs {

@@ -22,7 +22,7 @@ export default function App() {
    }
    return (
       <>
-         <AppHeader db_connection={db_connection}>
+         <AppHeader>
             <Logo db_connection={db_connection} />
          </AppHeader>
          <div className="tabs">

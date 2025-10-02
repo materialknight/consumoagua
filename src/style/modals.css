@@ -22,7 +22,7 @@
 .date-form,
 .edit-cell-form,
 .edit-fees-form,
-.brand-form {
+.titles-form {
    display: grid;
    gap: var(--grid-modal-gap);
 }

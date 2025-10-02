@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export default function EditFeesButton({ fees, setFees }) {
    const feesModal = useRef()
@@ -64,9 +64,8 @@ export default function EditFeesButton({ fees, setFees }) {
          text_input.setCustomValidity("Fórmula no válida")
       }
    }
-   const save_fees = submit_ev => {
-
-
+   const save_fees = () => {
+      setFees(structuredClone(feesCopy))
    }
    const tbody_rows = feesCopy.map((row, i) => {
       const next_lower_lim = feesCopy[i + 1]?.["mínimo"]
@@ -79,7 +78,16 @@ export default function EditFeesButton({ fees, setFees }) {
          const consumption_num = parseInt(consumption)
          formula_applied = consumption_num >= row["mínimo"] && consumption_num <= row["máximo"]
       }
-      const formula_classes = formula_applied ? ["applied-formula"] : ""
+      // const formula_classes = formula_applied ? ["applied-formula"] : ""
+      useEffect(() => {
+         if (consumption === "") return
+         const consumo = parseInt(consumption)
+         const formula = feesCopy.find(row => consumo >= row["mínimo"] && consumo <= row["máximo"])?.["fórmula"]
+         if (formula)
+         {
+            setResult(eval(formula).toFixed(2))
+         }
+      }, [feesCopy, consumption])
 
       return (
          <tr key={i}>

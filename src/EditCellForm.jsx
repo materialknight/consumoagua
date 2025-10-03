@@ -33,7 +33,9 @@ export default function EditCellForm({ ref, editable, data_cols, dateFormat, db_
          )
       })
       editable_col = editable.col
-      current_val = editable_val_type === "Date" ? display_date(editable_val, dateFormat) : editable_val
+      current_val = editable_val_type === "Date"
+         ? display_date(editable_val, dateFormat)
+         : editable_val
       switch (editable_val_type)
       {
          case "Date":

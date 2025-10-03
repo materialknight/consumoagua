@@ -12,13 +12,17 @@ export default function AppHeader({ children }) {
       setTitles(new_titles)
    }
    const primary_title = titles.primary
-      ? <h2 onClick={open_titles_modal}>{titles.primary}</h2>
-      : (
-         <button
-            type="button"
-            className="text-btn neutral-btn"
+      ? (
+         <h2
+            className="text-btn neutral-btn label-btn"
             onClick={open_titles_modal}
+            title="Click para cambiar el título primario de los recibos"
          >
+            {titles.primary}
+         </h2>
+      )
+      : (
+         <button type="button" className="text-btn neutral-btn" onClick={open_titles_modal}>
             Elegir título primario de los recibos
          </button>
       )
@@ -28,7 +32,15 @@ export default function AppHeader({ children }) {
             <div className="titles">
                <h1>Registro de consumo de agua</h1>
                {primary_title}
-               {titles.secondary && <h3>{titles.secondary}</h3>}
+               {titles.secondary &&
+                  <h3
+                     className="text-btn neutral-btn label-btn"
+                     onClick={open_titles_modal}
+                     title="Click para cambiar el título secundario de los recibos"
+                  >
+                     {titles.secondary}
+                  </h3>
+               }
             </div>
             {children}
          </header>

@@ -3,10 +3,10 @@ import { useEffect, useReducer, useState, useRef } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
 // Buttons:
 import DownloadButton from "./DownloadButton.jsx"
+import DownloadCSVButton from "./DownloadCSVButton.jsx"
 import AddRowButton from "./AddRowButton.jsx"
 import ReceiptButton from "./ReceiptButton.jsx"
 import DateButton from "./DateButton.jsx"
-import LogoButton from "./LogoButton.jsx"
 // Modals:
 import EditCellForm from "./EditCellForm.jsx"
 import ReadingForm from "./ReadingForm.jsx"
@@ -104,11 +104,11 @@ export default function Meters({ db_connection, keys }) {
          <MetersMenu>
             <TableSelect {...{ keys, tableNum, setTableNum }} />
             <TableFilter {...{ filter, setFilter }} />
-            <DownloadButton {...{ meters }} />
+            <DownloadButton {...{ meters, btn_txt: "JSON" }} />
+            <DownloadButton {...{ meters, btn_txt: "CSV", data_cols }} />
             <AddRowButton {...{ db_connection, meters, data_cols, tableNum, dispatch }} />
             <DateButton {...{ dateFormat, setDateFormat }} />
             <ReceiptButton {...{ receiptNum, setReceiptNum }} />
-            <LogoButton {...{ db_connection }} />
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>

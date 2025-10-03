@@ -53,7 +53,7 @@ export default function Logo({ db_connection }) {
                />
             )
             : (
-               <label className="label-btn neutral-btn logo">
+               <label className="label-btn neutral-btn logo" title="Click para cambiar el logo">
                   <span className="centered-text">Cargar logo. Tamaño ideal: 100x100px</span>
                   <input type="file" accept=".png, .jpg" name="logo" onChange={load_logo} hidden />
                </label>

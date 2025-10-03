@@ -47,27 +47,36 @@ input {
    display: flex;
    justify-content: space-between;
    align-items: center;
+   padding-bottom: 12px;
 
+   h1 {
+      font-size: 27px;
+      margin: 0;
+      padding-bottom: 6px;
+      /* min-width: max-content; */
+   }
 
    .titles {
       display: grid;
-      gap: 3px;
 
-      h1 {
-         font-size: 27px;
-         margin: 0;
-      }
+      /* min-width: max-content; */
 
       h2,
       h3 {
          margin: 0;
+         color: green;
       }
+   }
+
+   .receipt-titles {
+      display: grid;
    }
 
    .logo {
       width: 100px;
       height: 100px;
       border: 1px solid black;
+      cursor: pointer;
    }
 }
 

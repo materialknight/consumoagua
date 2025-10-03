@@ -24,12 +24,41 @@ export function create_table_URL(meters) {
    const meters_clone = structuredClone(meters)
    for (const row of meters_clone.table)
    {
-      row.desde = stringify_date(row.desde)
-      row.hasta = stringify_date(row.hasta)
+      if (row.desde)
+      {
+         row.desde = stringify_date(row.desde)
+      }
+      if (row.hasta)
+      {
+         row.hasta = stringify_date(row.hasta)
+      }
    }
    const meters_str = JSON.stringify(meters_clone, null, 2)
    const blob = new Blob([meters_str], { type: "application/json" })
    return URL.createObjectURL(blob)
+}
+
+export function csv_table_URL(meters, headers) {
+   const clone = structuredClone(meters)
+   for (const row of clone.table)
+   {
+      if (row.desde)
+      {
+         row.desde = stringify_date(row.desde)
+      }
+      if (row.hasta)
+      {
+         row.hasta = stringify_date(row.hasta)
+      }
+   }
+   const rows = clone.table.map(row => {
+      return headers
+         .map(header => JSON.stringify(row[header] ?? ""))
+         .join(", ")
+   })
+   const csv_str = [headers.join(", ")].concat(rows).join("\n")
+   const csv_blob = new Blob([csv_str], { type: "text/csv" })
+   return URL.createObjectURL(csv_blob)
 }
 
 export function stringify_date(date) {

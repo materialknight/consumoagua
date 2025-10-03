@@ -29,6 +29,14 @@ button {
    height: 40px;
 }
 
+.receipt-num-btn {
+   border: 1px solid black;
+   cursor: pointer;
+   display: grid;
+   justify-items: center;
+   align-items: center;
+}
+
 .neutral-btn {
    background-color: aliceblue;
 }

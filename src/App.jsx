@@ -28,13 +28,15 @@ export default function App() {
          <div className="tabs">
             <label>
                <span>Lecturas</span>
-               <input type="radio" hidden name="tab" defaultChecked={true} onChange={() => {
+               <input type="radio" name="tab" checked={tab === "meters" ? true : false} hidden onChange={() => {
                   setTab("meters")
                }} />
             </label>
             <label>
                <span>Tarifas</span>
-               <input type="radio" hidden name="tab" onChange={() => setTab("fees")} />
+               <input type="radio" name="tab" checked={tab === "fees" ? true : false} hidden onChange={() => {
+                  setTab("fees")
+               }} />
             </label>
          </div>
          {render_tab(tab)}

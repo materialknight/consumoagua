@@ -1,12 +1,13 @@
 import { display_date, parse_date } from "./core-funcs"
 
-export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_connection, meters }) {
+export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }) {
    let row_info = null
    let edited_col = null
    let edited_val = null
    let edited_val_type = null
    let edited_index = null
    let new_val_input = null
+
    if (edited)
    {
       edited_index = edited.row_index
@@ -18,29 +19,21 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
       row_info = create_row_grid(data_cols, edited, dateFormat)
       new_val_input = create_input(edited_col)
    }
+
    const update_val = submit_ev => {
       const input_data = Object.fromEntries(new FormData(submit_ev.target))
-      let updated_val = null
-      parse_input()
-
+      const updated_val = parse_input(input_data[edited_col], edited_col, dateFormat)
       const copy = structuredClone(meters)
-      console.log(edited.row[edited_col])
-
-      // const updated_val = edited_val_type === "Date"
-      //    ? parse_date(input_data[edited_col])
-      //    : input_data[edited_col]
-
-      console.log(updated_val)
-      // copy.meters[]
-
-      // copy.last_pay_day = parse_date(last_pay_day)
-      // db_connection.put("meters", tableNum, copy)
-      // dispatch({ type: "SET_LAST_PAY_DAY", copy })
-      // submit_ev.target.reset()
+      copy.table[edited_index][edited_col] = updated_val
+      db_connection.put("meters", tableNum, copy)
+      dispatch({ type: "EDIT_CELL", copy })
+      submit_ev.target.reset()
    }
    return (
       <dialog ref={ref}>
-         <form method="dialog" className="edit-cell-form" onSubmit={update_val}>
+         <form method="dialog" className="edit-cell-form" onSubmit={update_val} onReset={() => {
+            ref.current.close()
+         }}>
             <h2 className="dialog-title">Información de fila</h2>
             <div className="row-info">
                {row_info}
@@ -59,15 +52,10 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
 
             <div className="accept-cancel">
                <button type="submit" className="text-btn ok-btn">Aceptar</button>
-               <button type="button" className="text-btn not-ok-btn" onClick={() => {
-                  ref.current.close()
-               }}>
-                  Cancelar
-               </button>
+               <button type="reset" className="text-btn not-ok-btn">Cancelar</button>
             </div>
          </form>
       </dialog>
-
    )
 }
 
@@ -101,40 +89,6 @@ function create_input(edited_col) {
 
    }
 }
-//    if (edited_col === "pago")
-//    {
-//       return (
-//          <label>
-//             <span>Nuevo valor:</span>
-//             <select required name="pago">
-//                <option value="">-- Elija un estado de pago --</option>
-//                <option value="exonerado">Exonerado</option>
-//                <option value="pendiente">Pendiente</option>
-//                <option value="efectuado">Efectuado</option>
-//                <option value="acumulado sin multa">Acumulado sin multa</option>
-//                <option value="acumulado con multa">Acumulado con multa</option>
-//             </select>
-//          </label>
-//       )
-//    }
-//    const input_type = create_input_type(edited_val_type)
-//    return (
-//       <label>
-//          <span>Nuevo valor:</span>
-//          <input type={input_type} className="shortened" name={edited_col} required />
-//       </label>
-//    )
-// }
-
-// function create_input_type(edited_val_type) {
-//    switch (edited_val_type)
-//    {
-//       case "Date": return "date"
-//       case "Number": return "number"
-//       case "String": return "text"
-//       default: throw new TypeError(`Unexpected value type: ${edited_val_type}`)
-//    }
-// }
 
 function create_row_grid(data_cols, edited, dateFormat) {
    return data_cols.map((col, i) => {

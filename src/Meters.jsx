@@ -113,7 +113,7 @@ export default function Meters({ db_connection, keys }) {
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
-            <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters }} />
+            <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }} />
             <ReadingForm ref={readingForm} />
             <TableInfo {...{ meters, filtered_indexes }}>
                <LastPayDayButton {...{ db_connection, meters, tableNum, dateFormat, dispatch }} />

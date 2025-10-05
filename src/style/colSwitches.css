@@ -1,5 +1,8 @@
 .switches {
-   label:has(input:checked) {
-      background-color: aqua;
+   display: flex;
+   flex-wrap: wrap;
+
+   label {
+      border: 1px solid black;
    }
 }

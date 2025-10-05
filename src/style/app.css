@@ -27,7 +27,7 @@ body {
    --spacing: 0.5rem;
    --inclusive-color: forestgreen;
    --exclusive-color: crimson;
-   --shortened-width: 225px;
+   --shortened-width: 200px;
    --grid-modal-gap: 12px;
 
    padding: var(--spacing);
@@ -115,6 +115,9 @@ input {
 
 .meters-menu {
    display: flex;
+   align-items: center;
+   flex-wrap: wrap;
+   gap: 12px;
    justify-content: space-evenly;
 
    background-color: honeydew;

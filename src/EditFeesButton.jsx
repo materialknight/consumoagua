@@ -119,7 +119,7 @@ export default function EditFeesButton({ fees, setFees }) {
             <td className={formula_applied ? "applied-formula" : ""}>
                <input
                   type="text"
-                  value={row["fórmula"]}
+                  defaultValue={row["fórmula"]}
                   onChange={validate_formula}
                   title="Solo se permiten números, paréntesis, espacios, la variable 'consumo' o los operadores: + - * /"
                   data-index={i}
@@ -140,7 +140,7 @@ export default function EditFeesButton({ fees, setFees }) {
             </svg>
          </button>
          <dialog ref={feesModal}>
-            <form method="dialog" className="edit-fees-form" onSubmit={save_fees}>
+            <form method="dialog" className="edit-fees-form" onSubmit={save_fees} onReset={() => console.log("RESET FORM")}>
                <h2 className="dialog-title">Editar tarifas</h2>
                <div className="fees-form">
                   <table className="fees-table">
@@ -179,11 +179,14 @@ export default function EditFeesButton({ fees, setFees }) {
                   }}>
                      Cancelar
                   </button>
-                  <button type="button" className="text-btn neutral-btn" onClick={() => {
-                     setFeesCopy(structuredClone(fees))
+                  <button type="reset" className="text-btn neutral-btn" onClick={() => {
+                     // setFeesCopy(structuredClone(fees))
                   }}>
                      Restablecer valores
                   </button>
+               </div>
+               <div>
+                  <input type="text" defaultValue={consumption} onChange={() => console.log("HI")} />
                </div>
             </form>
          </dialog>

@@ -38,7 +38,7 @@ export default function DateButton({ dateFormat, setDateFormat }) {
          </button>
          <dialog ref={date_form}>
             <form method="dialog" className="date-form" onSubmit={change_date_format}>
-               <h2 className="dialog-title">Formato de fecha</h2>
+               <h2 className="dialog-title">Formato de fechas</h2>
                <h3 className="dialog-title">Muestra:</h3>
                <div>{display_date(sample_date, sampleFormat)}</div>
                <label className="control">

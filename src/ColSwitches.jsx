@@ -8,7 +8,7 @@ export default function ColSwitches({ cols, setCols }) {
    }
    const switches = cols.map((col, i) => {
       return (
-         <label key={col.name}>
+         <label key={col.name} className={col.visible ? "text-btn ok-btn" : "text-btn not-ok-btn"}>
             {col.name}
             <input type="checkbox" hidden checked={col.visible} onChange={() => toggle(i)} />
          </label>

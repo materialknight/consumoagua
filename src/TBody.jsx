@@ -1,6 +1,6 @@
 import { display_date } from "./core-funcs.js"
 
-export default function TBody({ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEditable, readingForm }) {
+export default function TBody({ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm }) {
    const TRs = filtered_indexes.map(index => {
       const row = meters.table[index]
       const TDs = visible_cols.map(col => {
@@ -31,7 +31,7 @@ export default function TBody({ meters, filtered_indexes, visible_cols, dateForm
                const row_index = click_ev.target.dataset.index
                const row = meters.table[row_index]
                const col = click_ev.target.dataset.col
-               setEditable({ row_index, row, col })
+               setEdited({ row_index, row, col })
                editCellForm.current.showModal()
             }
          }

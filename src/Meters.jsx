@@ -3,10 +3,10 @@ import { useEffect, useReducer, useState, useRef } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
 // Buttons:
 import DownloadButton from "./DownloadButton.jsx"
-import DownloadCSVButton from "./DownloadCSVButton.jsx"
 import AddRowButton from "./AddRowButton.jsx"
 import ReceiptButton from "./ReceiptButton.jsx"
 import DateButton from "./DateButton.jsx"
+import LastPayDayButton from "./LastPayDayButton.jsx"
 // Modals:
 import EditCellForm from "./EditCellForm.jsx"
 import ReadingForm from "./ReadingForm.jsx"
@@ -15,6 +15,7 @@ import MetersMenu from "./MetersMenu.jsx"
 import TableSelect from "./TableSelect.jsx"
 import TableFilter from "./TableFilter.jsx"
 import ColSwitches from "./ColSwitches.jsx"
+import TableInfo from "./TableInfo.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
@@ -95,7 +96,7 @@ export default function Meters({ db_connection, keys }) {
    }, [tableNum])
 
    const editCellForm = useRef()
-   const [editable, setEditable] = useState(null)
+   const [edited, setEdited] = useState(null)
    const readingForm = useRef()
    const data_cols = cols.filter(col => col.is_data)
 
@@ -112,11 +113,14 @@ export default function Meters({ db_connection, keys }) {
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
-            <EditCellForm ref={editCellForm} {...{ editable, data_cols, dateFormat, db_connection }} />
+            <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters }} />
             <ReadingForm ref={readingForm} />
+            <TableInfo {...{ meters, filtered_indexes }}>
+               <LastPayDayButton {...{ db_connection, meters, tableNum, dateFormat, dispatch }} />
+            </TableInfo>
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
                <THead {...{ visible_cols, setSorting }} />
-               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEditable, readingForm }} />
+               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm }} />
             </MetersTable>
          </main>
       </>

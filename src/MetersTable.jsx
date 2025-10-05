@@ -3,19 +3,12 @@ export default function MetersTable({ meters, filtered_indexes, filter, receiptN
    table_classes.push(meters.editable ? "latest-table" : "old-table")
    if (filter.length > 0) table_classes.push("filter-applied")
    return (
-      <>
-         <div className="table-info">
-            <span>Filas visibles: {filtered_indexes.length} / {meters.table.length}</span>
-            <span className="text-btn neutral-btn label-btn">
-               Último día de pago: {meters.last_pay_day ?? "Indefinido"}
-            </span>
-         </div>
-         <table className={table_classes.join(" ")}>
-            {children}
-         </table>
-      </>
+      <table className={table_classes.join(" ")}>
+         {children}
+      </table>
    )
 }
+
 //? La tabla más reciente solo puede cerrarse si hay fecha de pago, y solo hasta después de esa fecha.
 //? Guardar en state: multa, fecha de pago, número del siguiente recibo.
 //? "exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"

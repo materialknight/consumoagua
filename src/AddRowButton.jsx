@@ -123,7 +123,6 @@ function create_row(data_cols, form_data) {
             break
          default:
             throw new TypeError("Unexpected column type!")
-
       }
    }
    return row

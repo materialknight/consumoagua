@@ -27,9 +27,7 @@ function ReceiptModal({ modalRef, receiptNum, setReceiptNum }) {
             <h2 className="shortened dialog-title">Cambiar número del siguiente recibo</h2>
             <label className="control">
                <span>Valor actual:</span>
-               {receiptNum
-                  ? <input type="number" disabled value={receiptNum} className="shortened" />
-                  : <input type="text" disabled value="Indefinido" className="shortened" />}
+               <span>{receiptNum}</span>
             </label>
             <label className="control">
                <span>Nuevo valor:</span>

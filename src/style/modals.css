@@ -62,18 +62,19 @@
    justify-items: stretch;
    border: 1px solid green;
 
-   div {
+   label {
       display: grid;
-      gap: 6px;
       justify-items: center;
+      align-items: center;
+      gap: 6px;
       padding: 12px;
    }
 
-   div:first-child {
+   label:first-child {
       border-right: 1px solid green;
    }
 
-   div:last-child {
+   label:last-child {
       border-left: 1px solid green;
    }
 }

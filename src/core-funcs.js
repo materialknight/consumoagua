@@ -1,3 +1,25 @@
+export function display_val(index, row, col, dateFormat) {
+   switch (col)
+   {
+      case "fila": return parseInt(index) + 1
+      case "medidor": return row[col]
+      case "titular": return row[col]
+      case "anterior": return row[col]
+      case "actual": return row[col]
+      case "desde": return row[col] ? display_date(row[col], dateFormat) : null
+      case "hasta": return row[col] ? display_date(row[col], dateFormat) : null
+      case "recibo": return row[col]
+      case "pago": return row[col]
+      case "deuda": return row[col].toFixed(2)
+      case "multa": return row[col].toFixed(2)
+      case "otros": return row[col].toFixed(2)
+      case "crédito": return row[col].toFixed(2)
+      case "zona": return row[col]
+      case "caserío": return row[col]
+      default: throw new TypeError(`Unexpected column type: ${col}`)
+   }
+}
+
 export function name_file(table) {
    const row = table[0]
    const month_1 = display_date(row.desde, { month: "short" })
@@ -144,15 +166,15 @@ export function parse_date(date_str) {
 
 export function set_initial_data(db, old_version_num = null, new_version_num = null) {
 
-   localStorage.setItem("fees", JSON.stringify([
-      { mínimo: 0, máximo: 6, fórmula: "2.61" },
-      { mínimo: 7, máximo: 40, fórmula: "0.25 * consumo + 1.60" },
-      { mínimo: 41, máximo: 50, fórmula: "0.40 * (consumo - 40) + 10 + 1.60" },
-      { mínimo: 51, máximo: 100, fórmula: "0.75 * consumo + 1.60" },
-      { mínimo: 101, máximo: 150, fórmula: "1.00 * consumo + 1.60" },
-      { mínimo: 151, máximo: 200, fórmula: "1.25 * consumo + 1.60" },
-      { mínimo: 201, máximo: null, fórmula: "1.50 * consumo + 1.60" }
-   ]))
+   // localStorage.setItem("fees", JSON.stringify([
+   //    { mínimo: 0, máximo: 6, fórmula: "2.61" },
+   //    { mínimo: 7, máximo: 40, fórmula: "0.25 * consumo + 1.60" },
+   //    { mínimo: 41, máximo: 50, fórmula: "0.40 * (consumo - 40) + 10 + 1.60" },
+   //    { mínimo: 51, máximo: 100, fórmula: "0.75 * consumo + 1.60" },
+   //    { mínimo: 101, máximo: 150, fórmula: "1.00 * consumo + 1.60" },
+   //    { mínimo: 151, máximo: 200, fórmula: "1.25 * consumo + 1.60" },
+   //    { mínimo: 201, máximo: null, fórmula: "1.50 * consumo + 1.60" }
+   // ]))
 
    const meters_store = db.createObjectStore("meters", { autoIncrement: true })
    const brand_store = db.createObjectStore("logo", { autoIncrement: true })
@@ -160,6 +182,7 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
 
    // Test data below. Only 1 empty array should be added in production.
    meters_store.add({
+      fine: 1.25,
       last_pay_day: null,
       editable: false,
       table: [
@@ -215,6 +238,7 @@ export function set_initial_data(db, old_version_num = null, new_version_num = n
    })
 
    meters_store.add({
+      fine: 0,
       last_pay_day: null,
       editable: true,
       table: [

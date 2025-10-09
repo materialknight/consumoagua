@@ -1,0 +1,121 @@
+.couple {
+   font-size: 13px;
+   color: royalblue;
+   /* These declarations are necessary the element to occupy the entire printed page: */
+   height: 27cm;
+   break-after: page;
+   display: grid;
+   /* display: none; */
+   align-items: start;
+}
+
+/* .chosen {
+   display: grid;
+} */
+
+.receipt {
+   display: grid;
+   gap: 10px;
+   padding: 10px;
+
+   h2 {
+      margin: 0;
+      font-size: 15px;
+      text-align: center;
+   }
+
+   h3 {
+      margin: 0;
+      font-size: 14px;
+      text-align: center;
+      font-weight: normal;
+   }
+}
+
+.thick {
+   font-weight: bold;
+}
+
+.black-c {
+   color: black;
+}
+
+.r-border {
+   /* When the grid cells have outline and border, the 4 outer sides of the grid have the same visual width as its inner sides */
+   border: 1px solid royalblue;
+   outline: 1px solid royalblue;
+}
+
+.r-cell {
+   display: grid;
+   justify-items: center;
+   padding: 3px;
+   align-items: center;
+}
+
+.section-2 {
+   display: grid;
+   /* border: 1px solid dodgerblue; */
+   grid-template-columns: 1fr 1fr 1fr;
+   gap: 10px;
+
+}
+
+.reading {
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr;
+}
+
+.long-cell {
+   grid-column: 1 / span 3;
+   display: flex;
+   justify-content: start;
+}
+
+.r-row {
+   display: flex;
+   justify-content: space-between;
+}
+
+.section-1 {
+   display: grid;
+   border: 2px solid dodgerblue;
+   grid-template-columns: auto 75px;
+   align-items: center;
+
+   img {
+      width: 75px;
+      height: 75px;
+      grid-column: 2;
+      grid-row: span 2;
+   }
+}
+
+.fees-grid {
+   display: grid;
+   grid-template-columns: auto auto;
+
+   .fees-grid-title {
+      grid-column: span 2;
+   }
+}
+
+@media print {
+   @page {
+      size: letter portrait;
+      margin: 0;
+   }
+
+   body {
+      margin: 0;
+      background-color: transparent;
+   }
+
+   body>*:not(.couple) {
+      display: none;
+   }
+
+   .couple {
+      display: grid;
+   }
+}

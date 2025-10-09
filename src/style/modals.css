@@ -22,7 +22,8 @@
 .date-form,
 .edit-cell-form,
 .edit-fees-form,
-.titles-form {
+.titles-form,
+.new-reading {
    display: grid;
    gap: var(--grid-modal-gap);
 }

@@ -1,8 +1,6 @@
 import { useRef } from "react"
-import { useLocalStorage } from "./custom-hooks"
 
-export default function AppHeader({ children }) {
-   const [titles, setTitles] = useLocalStorage("titles", { primary: null, secondary: null })
+export default function AppHeader({ titles, setTitles, children }) {
    const titlesModal = useRef(null)
    const open_titles_modal = () => {
       titlesModal.current.showModal()

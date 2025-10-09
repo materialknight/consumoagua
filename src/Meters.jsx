@@ -22,8 +22,12 @@ import TBody from "./TBody.jsx"
 import reducer from "./reducer.js"
 // Utilities:
 import { filter_indexes } from "./core-funcs.js"
+import { InfoModal } from "./simpleModals.jsx"
+import RowOptions from "./RowOptions.jsx"
+import FeesTable from "./FeesTable.jsx"
+import ReceiptPair from "./ReceiptPair.jsx"
 
-export default function Meters({ db_connection, keys }) {
+export default function Meters({ db_connection, keys, fees, titles }) {
    const [cols, setCols] = useLocalStorage("cols", [
       { name: "fila", visible: true, type: "Number", is_data: false },
       { name: "medidor", visible: true, type: "String", is_data: true },
@@ -49,10 +53,10 @@ export default function Meters({ db_connection, keys }) {
    })
    const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
    const [meters, dispatch] = useReducer(reducer, {
-      table: [],
+      fine: 0,
+      last_pay_day: null,
       editable: false,
-      fine: null,
-      last_pay_day: null
+      table: []
    })
    const [tableNum, setTableNum] = useState(null)
    const [filter, setFilter] = useState("")
@@ -96,9 +100,38 @@ export default function Meters({ db_connection, keys }) {
    }, [tableNum])
 
    const editCellForm = useRef()
-   const [edited, setEdited] = useState(null)
+   const [edited, setEdited] = useState(null) // { index, row, col }
    const readingForm = useRef()
    const data_cols = cols.filter(col => col.is_data)
+   const rowOptionsRef = useRef()
+   const fees_grid_cells = fees.map((row, i) => {
+      return [
+         <div key={`${i}-A`} className="r-cell r-border">{row["mínimo"]} - {row["máximo"]}</div>,
+         <div key={`${i}-B`} className="r-cell r-border">{row["fórmula"]}</div>
+      ]
+   })
+   const receipts = meters.table.map((row, i) => {
+      return <ReceiptPair key={i} {...{
+         meter_num: row["medidor"],
+         owner: row["titular"],
+         prev: row["anterior"],
+         next: row["actual"],
+         from: row["desde"],
+         until: row["hasta"],
+         receipt_num: row["recibo"],
+         debt: row["deuda"],
+         fine: row["multa"],
+         others: row["otros"],
+         credit: row["crédito"],
+         zone: row["zona"],
+         village: row["caserío"],
+         titles,
+         fees_grid_cells,
+         dateFormat,
+         fees
+      }} />
+   })
+   const [chosenReceipt, setChosenReceipt] = useState(null)
 
    return (
       <>
@@ -115,14 +148,17 @@ export default function Meters({ db_connection, keys }) {
          <main>
             <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }} />
             <ReadingForm ref={readingForm} />
-            <TableInfo {...{ meters, filtered_indexes }}>
+            <RowOptions {...{ rowOptionsRef, chosenReceipt }} />
+            <TableInfo {...{ meters, filtered_indexes, fees }}>
                <LastPayDayButton {...{ db_connection, meters, tableNum, dateFormat, dispatch }} />
             </TableInfo>
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
                <THead {...{ visible_cols, setSorting }} />
-               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm }} />
+               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm, rowOptionsRef, setChosenReceipt }} />
             </MetersTable>
          </main>
+         {receipts}
       </>
    )
 }
+

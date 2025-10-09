@@ -1,5 +1,4 @@
 // Hooks:
-import { useEffect, useState } from "react"
 import { useIDB, useKeys, useLocalStorage } from "./custom-hooks.js"
 // Components:
 import AppHeader from "./AppHeader.jsx"
@@ -13,16 +12,26 @@ export default function App() {
    const [tab, setTab] = useLocalStorage("tab", "meters")
    const db_connection = useIDB("meters", 1, set_initial_data)
    const keys = useKeys(db_connection, "meters")
+   const [fees, setFees] = useLocalStorage("fees", [
+      { mínimo: 0, máximo: 6, fórmula: "2.61" },
+      { mínimo: 7, máximo: 40, fórmula: "0.25 * consumo + 1.60" },
+      { mínimo: 41, máximo: 50, fórmula: "0.40 * (consumo - 40) + 10 + 1.60" },
+      { mínimo: 51, máximo: 100, fórmula: "0.75 * consumo + 1.60" },
+      { mínimo: 101, máximo: 150, fórmula: "1.00 * consumo + 1.60" },
+      { mínimo: 151, máximo: 200, fórmula: "1.25 * consumo + 1.60" },
+      { mínimo: 201, máximo: 999, fórmula: "1.50 * consumo + 1.60" }
+   ])
+   const [titles, setTitles] = useLocalStorage("titles", { primary: null, secondary: null })
    const render_tab = (tab) => {
       switch (tab)
       {
-         case "meters": return <Meters {...{ db_connection, keys }} />
-         case "fees": return <Fees />
+         case "meters": return <Meters {...{ db_connection, keys, fees, titles }} />
+         case "fees": return <Fees {...{ fees, setFees }} />
       }
    }
    return (
       <>
-         <AppHeader>
+         <AppHeader {...{ titles, setTitles }}>
             <Logo db_connection={db_connection} />
          </AppHeader>
          <div className="tabs">

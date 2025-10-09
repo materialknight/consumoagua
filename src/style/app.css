@@ -4,6 +4,7 @@
 @import "./buttons.css";
 @import "./modals.css";
 @import "./inputs.css";
+@import "./receipts.css";
 
 body {
    font-family: var(--fonts);

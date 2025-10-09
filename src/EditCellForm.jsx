@@ -1,21 +1,17 @@
-import { display_date, parse_date } from "./core-funcs"
+import { display_date, parse_date, display_val } from "./core-funcs"
 
 export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }) {
    let row_info = null
    let edited_col = null
    let edited_val = null
-   let edited_val_type = null
    let edited_index = null
    let new_val_input = null
 
-   if (edited)
+   if (edited && edited.col !== "fila")
    {
-      edited_index = edited.row_index
+      edited_index = edited.index
       edited_col = edited.col
-      edited_val_type = data_cols.find(col => col.name === edited_col)?.type
-      edited_val = edited_val_type === "Date"
-         ? display_date(edited.row[edited_col], dateFormat)
-         : edited.row[edited_col]
+      edited_val = display_val(edited_index, edited.row, edited_col, dateFormat)
       row_info = create_row_grid(data_cols, edited, dateFormat)
       new_val_input = create_input(edited_col)
    }
@@ -92,11 +88,12 @@ function create_input(edited_col) {
 
 function create_row_grid(data_cols, edited, dateFormat) {
    return data_cols.map((col, i) => {
-      let val = edited.row[col.name]
-      if (col.type === "Date" && val)
-      {
-         val = display_date(val, dateFormat)
-      }
+      // let val = edited.row[col.name]
+      // if (col.type === "Date" && val)
+      // {
+      //    val = display_date(val, dateFormat)
+      // }
+      const val = display_val(null, edited.row, col.name, dateFormat)
       return (
          <div key={i} className={col.name === edited.col ? "highlighted" : ""}>
             <span>{col.name}:</span>

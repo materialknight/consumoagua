@@ -1,4 +1,5 @@
 // Hooks:
+import { useState, useEffect } from "react"
 import { useIDB, useKeys, useLocalStorage } from "./custom-hooks.js"
 // Components:
 import AppHeader from "./AppHeader.jsx"
@@ -22,17 +23,38 @@ export default function App() {
       { mínimo: 201, máximo: 999, fórmula: "1.50 * consumo + 1.60" }
    ])
    const [titles, setTitles] = useLocalStorage("titles", { primary: null, secondary: null })
+   const [logo, setLogo] = useState({ file: null })
+   const [logoURL, setLogoURL] = useState(null)
    const render_tab = (tab) => {
       switch (tab)
       {
-         case "meters": return <Meters {...{ db_connection, keys, fees, titles }} />
+         case "meters": return <Meters {...{ db_connection, keys, fees, titles, logoURL }} />
          case "fees": return <Fees {...{ fees, setFees }} />
       }
    }
+   useEffect(() => {
+      if (db_connection)
+      {
+         db_connection.get("logo", 1).then(saved_logo => {
+            setLogo(saved_logo)
+         })
+      }
+   }, [db_connection])
+   useEffect(() => {
+      if (logo.file)
+      {
+         const logo_URL = URL.createObjectURL(logo.file)
+         setLogoURL(logo_URL)
+         return () => {
+            URL.revokeObjectURL(logo_URL)
+            setLogoURL(null)
+         }
+      }
+   }, [logo])
    return (
       <>
          <AppHeader {...{ titles, setTitles }}>
-            <Logo db_connection={db_connection} />
+            <Logo {...{ db_connection, setLogo, logoURL }} />
          </AppHeader>
          <div className="tabs">
             <label>

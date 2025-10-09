@@ -1,6 +1,6 @@
 import { display_date } from "./core-funcs"
 
-export default function ReceiptPair({ meter_num, owner, prev, next, from, until, receipt_num, debt, fine, others, credit, zone, village, titles, fees_grid_cells, dateFormat, fees }) {
+export default function ReceiptPair({ meter_num, owner, prev, next, from, until, receipt_num, debt, fine, others, credit, zone, village, titles, fees_grid_cells, dateFormat, fees, logoURL }) {
 
    const days_span = from && until ? ((until - from) / (1000 * 60 * 60 * 24)) + 1 : null
    const display_from = from ? display_date(from, dateFormat) : null
@@ -11,7 +11,7 @@ export default function ReceiptPair({ meter_num, owner, prev, next, from, until,
       : null
    const consumption_fee = formula ? eval(formula) : 0
    const total = consumption_fee + debt + fine + others - credit
-   const receipt_args = { titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells }
+   const receipt_args = { titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells, logoURL }
    return (
       <div className="couple">
          <Receipt {...receipt_args} />
@@ -20,12 +20,12 @@ export default function ReceiptPair({ meter_num, owner, prev, next, from, until,
    )
 }
 
-function Receipt({ titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells }) {
+function Receipt({ titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells, logoURL }) {
    return (
       <div className="receipt">
          <div className="section-1">
             <h2>{titles.primary}</h2>
-            <img src="" alt="" />
+            <img src={logoURL} alt="logo" />
             {titles.secondary ? <h3>{titles.secondary}</h3> : null}
          </div>
          <div className="section-2">

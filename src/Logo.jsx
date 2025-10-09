@@ -1,10 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 
-export default function Logo({ db_connection }) {
-   const [logo, setLogo] = useState({ file: null })
-   const [logoURL, setLogoURL] = useState(null)
+export default function Logo({ db_connection, setLogo, logoURL }) {
    const removeLogoModal = useRef(null)
-
    const remove_logo = () => {
       const deleted_logo = { file: null }
       db_connection.put("logo", 1, deleted_logo)
@@ -19,25 +16,6 @@ export default function Logo({ db_connection }) {
          setLogo(new_logo)
       }
    }
-   useEffect(() => {
-      if (db_connection)
-      {
-         db_connection.get("logo", 1).then(saved_logo => {
-            setLogo(saved_logo)
-         })
-      }
-   }, [db_connection])
-   useEffect(() => {
-      if (logo.file)
-      {
-         const logo_URL = URL.createObjectURL(logo.file)
-         setLogoURL(logo_URL)
-         return () => {
-            URL.revokeObjectURL(logo_URL)
-            setLogoURL(null)
-         }
-      }
-   }, [logo])
    return (
       <>
          {logoURL

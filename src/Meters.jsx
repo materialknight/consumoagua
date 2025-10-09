@@ -27,7 +27,7 @@ import RowOptions from "./RowOptions.jsx"
 import FeesTable from "./FeesTable.jsx"
 import ReceiptPair from "./ReceiptPair.jsx"
 
-export default function Meters({ db_connection, keys, fees, titles }) {
+export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const [cols, setCols] = useLocalStorage("cols", [
       { name: "fila", visible: true, type: "Number", is_data: false },
       { name: "medidor", visible: true, type: "String", is_data: true },
@@ -128,7 +128,8 @@ export default function Meters({ db_connection, keys, fees, titles }) {
          titles,
          fees_grid_cells,
          dateFormat,
-         fees
+         fees,
+         logoURL
       }} />
    })
    const [chosenReceipt, setChosenReceipt] = useState(null)

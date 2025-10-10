@@ -129,7 +129,8 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          fees_grid_cells,
          dateFormat,
          fees,
-         logoURL
+         logoURL,
+         last_pay_day: meters.last_pay_day
       }} />
    })
    const [chosenReceipt, setChosenReceipt] = useState(null)

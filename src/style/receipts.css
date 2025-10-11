@@ -4,9 +4,13 @@
    /* These declarations are necessary the element to occupy the entire printed page: */
    height: 27cm;
    break-after: page;
-   display: grid;
-   /* display: none; */
+   /* display: grid; */
+   display: none;
    align-items: start;
+}
+
+.hidden {
+   display: none;
 }
 
 /* .chosen {

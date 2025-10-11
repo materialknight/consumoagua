@@ -1,7 +1,6 @@
 import { display_date } from "./core-funcs"
 
 export default function ReceiptPair({ meter_num, owner, prev, next, from, until, receipt_num, debt, fine, others, credit, zone, village, titles, fees_grid_cells, dateFormat, fees, logoURL, last_pay_day }) {
-
    const days_span = from && until ? ((until - from) / (1000 * 60 * 60 * 24)) + 1 : null
    const display_from = from ? display_date(from, dateFormat) : null
    const display_until = until ? display_date(until, dateFormat) : null

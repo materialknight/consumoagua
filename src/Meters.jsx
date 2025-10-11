@@ -1,5 +1,5 @@
 // Hooks:
-import { useEffect, useReducer, useState, useRef } from "react"
+import { useEffect, useReducer, useState, useRef, use } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
 // Buttons:
 import DownloadButton from "./DownloadButton.jsx"
@@ -26,6 +26,7 @@ import { InfoModal } from "./simpleModals.jsx"
 import RowOptions from "./RowOptions.jsx"
 import FeesTable from "./FeesTable.jsx"
 import ReceiptPair from "./ReceiptPair.jsx"
+import PrintButton from "./PrintButton.jsx"
 
 export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const [cols, setCols] = useLocalStorage("cols", [
@@ -110,8 +111,9 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          <div key={`${i}-B`} className="r-cell r-border">{row["fórmula"]}</div>
       ]
    })
-   const receipts = meters.table.map((row, i) => {
-      return <ReceiptPair key={i} {...{
+   const receipts = filtered_indexes.map(index => {
+      const row = meters.table[index]
+      return <ReceiptPair key={index} {...{
          meter_num: row["medidor"],
          owner: row["titular"],
          prev: row["anterior"],
@@ -130,10 +132,9 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          dateFormat,
          fees,
          logoURL,
-         last_pay_day: meters.last_pay_day
+         last_pay_day: meters.last_pay_day,
       }} />
    })
-   const [chosenReceipt, setChosenReceipt] = useState(null)
 
    return (
       <>
@@ -144,23 +145,24 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
             <DownloadButton {...{ meters, btn_txt: "CSV", data_cols }} />
             <AddRowButton {...{ db_connection, meters, data_cols, tableNum, dispatch }} />
             <DateButton {...{ dateFormat, setDateFormat }} />
+            <PrintButton />
             <ReceiptButton {...{ receiptNum, setReceiptNum }} />
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
             <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }} />
             <ReadingForm ref={readingForm} />
-            <RowOptions {...{ rowOptionsRef, chosenReceipt }} />
+            <RowOptions {...{ rowOptionsRef }} />
             <TableInfo {...{ meters, filtered_indexes, fees }}>
                <LastPayDayButton {...{ db_connection, meters, tableNum, dateFormat, dispatch }} />
             </TableInfo>
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>
                <THead {...{ visible_cols, setSorting }} />
-               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm, rowOptionsRef, setChosenReceipt }} />
+               <TBody {...{ meters, filtered_indexes, visible_cols, dateFormat, editCellForm, setEdited, readingForm, rowOptionsRef }} />
             </MetersTable>
          </main>
+         {/* ! For unknown reason, the receipts cause a forced reflow. */}
          {receipts}
       </>
    )
 }
-

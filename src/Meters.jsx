@@ -27,6 +27,7 @@ import RowOptions from "./RowOptions.jsx"
 import FeesTable from "./FeesTable.jsx"
 import ReceiptPair from "./ReceiptPair.jsx"
 import PrintButton from "./PrintButton.jsx"
+import FineButton from "./FineButton.jsx"
 
 export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const [cols, setCols] = useLocalStorage("cols", [
@@ -135,6 +136,7 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          last_pay_day: meters.last_pay_day,
       }} />
    })
+   console.log(meters)
 
    return (
       <>
@@ -152,8 +154,9 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          <main>
             <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }} />
             <ReadingForm ref={readingForm} />
-            <RowOptions {...{ rowOptionsRef }} />
+            <RowOptions {...{ rowOptionsRef, meters }} />
             <TableInfo {...{ meters, filtered_indexes, fees }}>
+               <FineButton {...{ db_connection, meters, tableNum, dispatch }} />
                <LastPayDayButton {...{ db_connection, meters, tableNum, dateFormat, dispatch }} />
             </TableInfo>
             <MetersTable {...{ meters, filtered_indexes, filter, receiptNum }}>

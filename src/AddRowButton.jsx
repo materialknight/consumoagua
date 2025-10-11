@@ -26,7 +26,7 @@ export default function AddRowButton({ db_connection, meters, data_cols, tableNu
    const add_row = (submit_ev) => {
       const row_data = Object.fromEntries(new FormData(submit_ev.target))
       const copy = structuredClone(meters)
-      const new_row = create_row(data_cols, row_data)
+      const new_row = create_row(row_data)
       const meter_repeated = copy.table.some(row => row.medidor === new_row.medidor)
       if (meter_repeated)
       {
@@ -68,7 +68,7 @@ export default function AddRowButton({ db_connection, meters, data_cols, tableNu
                </label>
                <label className="control">
                   <span>Titular:</span>
-                  <input type="text" name="titular" />
+                  <input type="text" name="titular" required />
                </label>
                <label className="control">
                   <span>Pimera lectura:</span>
@@ -80,14 +80,14 @@ export default function AddRowButton({ db_connection, meters, data_cols, tableNu
                </label>
                <label className="control">
                   <span>Zona:</span>
-                  <input type="text" name="zona" list="zones" />
+                  <input type="text" name="zona" list="zones" required />
                </label>
                <datalist id="zones">
                   {Array.from(zones).map((zone, i) => <option key={i} value={zone}></option>)}
                </datalist>
                <label className="control">
                   <span>Caserío:</span>
-                  <input type="text" name="caserío" list="villages" />
+                  <input type="text" name="caserío" list="villages" required />
                </label>
                <datalist id="villages">
                   {Array.from(villages).map((village, i) => <option key={i} value={village}></option>)}
@@ -106,24 +106,21 @@ export default function AddRowButton({ db_connection, meters, data_cols, tableNu
    )
 }
 
-function create_row(data_cols, form_data) {
-   const row = {}
-   for (const col of data_cols)
-   {
-      switch (col.type)
-      {
-         case "String":
-            row[col.name] = col.name in form_data ? form_data[col.name] : col.init
-            break
-         case "Number":
-            row[col.name] = col.name in form_data ? parseInt(form_data[col.name]) : col.init
-            break
-         case "Date":
-            row[col.name] = col.name in form_data ? parse_date(form_data[col.name]) : col.init
-            break
-         default:
-            throw new TypeError("Unexpected column type!")
-      }
+function create_row(form_data) {
+   return {
+      "medidor": form_data["medidor"].trim(),
+      "titular": form_data["titular"].trim(),
+      "anterior": parseInt(form_data["anterior"]),
+      "actual": null,
+      "desde": parse_date(form_data["desde"]),
+      "hasta": null,
+      "recibo": null,
+      "pago": null,
+      "deuda": 0,
+      "multa": 0,
+      "otros": 0,
+      "crédito": 0,
+      "zona": form_data["zona"].trim(),
+      "caserío": form_data["caserío"].trim()
    }
-   return row
 }

@@ -18,7 +18,7 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
 
    const update_val = submit_ev => {
       const input_data = Object.fromEntries(new FormData(submit_ev.target))
-      const updated_val = parse_input(input_data[edited_col], edited_col, dateFormat)
+      const updated_val = parse_input(input_data[edited_col], edited_col)
       const copy = structuredClone(meters)
       copy.table[edited_index][edited_col] = updated_val
       db_connection.put("meters", tableNum, copy)
@@ -88,11 +88,6 @@ function create_input(edited_col) {
 
 function create_row_grid(data_cols, edited, dateFormat) {
    return data_cols.map((col, i) => {
-      // let val = edited.row[col.name]
-      // if (col.type === "Date" && val)
-      // {
-      //    val = display_date(val, dateFormat)
-      // }
       const val = display_val(null, edited.row, col.name, dateFormat)
       return (
          <div key={i} className={col.name === edited.col ? "highlighted" : ""}>
@@ -103,24 +98,25 @@ function create_row_grid(data_cols, edited, dateFormat) {
    })
 }
 
-function parse_input(val, edited_col, dateFormat) {
+function parse_input(val, edited_col) {
    switch (edited_col)
    {
-      case "medidor": return val
-      case "titular": return val
+      case "medidor": return val.trim()
+      case "titular": return val.trim()
       case "anterior": return parseInt(val)
       case "actual": return parseInt(val)
-      case "desde": return parse_date(val, dateFormat)
-      case "hasta": return parse_date(val, dateFormat)
+      case "desde": return parse_date(val)
+      case "hasta": return parse_date(val)
       case "recibo": return parseInt(val)
       case "pago": return val
       case "deuda": return parseFloat(val)
       case "multa": return parseFloat(val)
       case "otros": return parseFloat(val)
       case "crédito": return parseFloat(val)
-      case "zona": return val
-      case "caserío": return val
+      case "zona": return val.trim()
+      case "caserío": return val.trim()
       default: throw new TypeError(`Unexpected column type: ${edited_col}`)
    }
 }
 
+//! IMPEDIR MEDIDOR REPETIDO!!!!

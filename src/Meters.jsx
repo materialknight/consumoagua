@@ -19,16 +19,13 @@ import TableInfo from "./TableInfo.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
+import PrintButton from "./PrintButton.jsx"
+import FineButton from "./FineButton.jsx"
 import Receipt from "./Receipt.jsx"
+import RowOptions from "./RowOptions.jsx"
 // Utilities:
 import reducer from "./reducer.js"
 import { filter_indexes, display_date } from "./core-funcs.js"
-import { InfoModal } from "./simpleModals.jsx"
-import RowOptions from "./RowOptions.jsx"
-import FeesTable from "./FeesTable.jsx"
-import ReceiptPair from "./ReceiptPair.jsx"
-import PrintButton from "./PrintButton.jsx"
-import FineButton from "./FineButton.jsx"
 
 export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const [cols, setCols] = useLocalStorage("cols", [
@@ -54,7 +51,6 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
       month: "short",
       year: "2-digit"
    })
-   const payment_states = ["exonerado", "pendiente", "efectuado", "acumulado sin multa", "acumulado con multa"]
    const [meters, dispatch] = useReducer(reducer, {
       fine: 0,
       last_pay_day: null,
@@ -147,36 +143,36 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
       const others = row["otros"]
       const credit = row["crédito"]
       const total = consumption_fee + debt + fine + others - credit
-      const receipt_args = { meter_num: row["medidor"], owner: row["titular"], prev, next, consumo, from, until, days_span, receipt_num: row["recibo"], consumption_fee, debt, fine, others, credit, total, zone: row["zona"], village: row["caserío"], last_pay_day, late_payment_fine, titles, logoURL, fees_grid_cells }
-
+      const receipt_args = {
+         meter_num: row["medidor"],
+         owner: row["titular"],
+         prev,
+         next,
+         consumo,
+         from,
+         until,
+         days_span,
+         receipt_num: row["recibo"],
+         consumption_fee,
+         debt,
+         fine,
+         others,
+         credit,
+         total,
+         zone: row["zona"],
+         village: row["caserío"],
+         last_pay_day,
+         late_payment_fine,
+         titles,
+         logoURL,
+         fees_grid_cells
+      }
       return (
          <div key={index} className="couple">
             <Receipt {...receipt_args} />
             <Receipt {...receipt_args} />
          </div>
       )
-      // return <ReceiptPair key={index} {...{
-      //    meter_num: row["medidor"],
-      //    owner: row["titular"],
-      //    prev: row["anterior"],
-      //    next: row["actual"],
-      //    from: row["desde"],
-      //    until: row["hasta"],
-      //    receipt_num: row["recibo"],
-      //    debt: row["deuda"],
-      //    fine: row["multa"],
-      //    others: row["otros"],
-      //    credit: row["crédito"],
-      //    zone: row["zona"],
-      //    village: row["caserío"],
-      //    titles,
-      //    fees_grid_cells,
-      //    dateFormat,
-      //    fees,
-      //    logoURL,
-      //    last_pay_day: meters.last_pay_day,
-      //    table_fine: meters.fine
-      // }} />
    })
 
    return (

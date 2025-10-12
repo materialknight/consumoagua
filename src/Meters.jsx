@@ -1,5 +1,5 @@
 // Hooks:
-import { useEffect, useReducer, useState, useRef, use } from "react"
+import { useEffect, useReducer, useState, useRef } from "react"
 import { useLocalStorage } from "./custom-hooks.js"
 // Buttons:
 import DownloadButton from "./DownloadButton.jsx"
@@ -136,7 +136,6 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          last_pay_day: meters.last_pay_day,
       }} />
    })
-   console.log(meters)
 
    return (
       <>

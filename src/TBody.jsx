@@ -18,10 +18,6 @@ export default function TBody({ meters, filtered_indexes, visible_cols, dateForm
                readingForm.current.showModal()
                return
             }
-            // const row_index = click_ev.target.dataset.index
-            // const row = meters.table[index]
-            // const col = click_ev.target.dataset.col
-            // setEdited({ index, row, col })
             editCellForm.current.showModal()
          }
          }>{val}</td>

@@ -1,12 +1,15 @@
-import { display_date, parse_date, display_val } from "./core-funcs"
+import { useRef, useState } from "react"
+import { InfoModal } from "./simpleModals"
+import { parse_date, display_val } from "./core-funcs"
 
 export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }) {
+   const repetitionRef = useRef()
+   const [repeatedMeter, setRepeatedMeter] = useState(null)
    let row_info = null
    let edited_col = null
    let edited_val = null
    let edited_index = null
    let new_val_input = null
-
    if (edited && edited.col !== "fila")
    {
       edited_index = edited.index
@@ -15,43 +18,61 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
       row_info = create_row_grid(data_cols, edited, dateFormat)
       new_val_input = create_input(edited_col)
    }
-
    const update_val = submit_ev => {
       const input_data = Object.fromEntries(new FormData(submit_ev.target))
       const updated_val = parse_input(input_data[edited_col], edited_col)
       const copy = structuredClone(meters)
+      // Edition START
+      if (edited_col === "medidor")
+      {
+         const meter_repeated = copy.table.some(row => row["medidor"] === updated_val)
+         if (meter_repeated)
+         {
+            setRepeatedMeter(updated_val)
+            repetitionRef.current.showModal()
+            return
+         }
+      }
+      // Edition END
+
       copy.table[edited_index][edited_col] = updated_val
       db_connection.put("meters", tableNum, copy)
       dispatch({ type: "EDIT_CELL", copy })
       submit_ev.target.reset()
    }
    return (
-      <dialog ref={ref}>
-         <form method="dialog" className="edit-cell-form" onSubmit={update_val} onReset={() => {
-            ref.current.close()
-         }}>
-            <h2 className="dialog-title">Información de fila</h2>
-            <div className="row-info">
-               {row_info}
-            </div>
-            <h2 className="dialog-title"> Editar "{edited_col}":</h2>
-            <div className="edit-grid">
-               <label>
-                  <span>Valor actual:</span>
-                  <span>{edited_val}</span>
-               </label>
-               <label>
-                  <span>Nuevo valor:</span>
-                  {new_val_input}
-               </label>
-            </div>
+      <>
+         <InfoModal
+            ref={repetitionRef}
+            text={`Error: No se modificó la fila porque cada fila debe tener un número de medidor diferente, y el medidor ${repeatedMeter} ya existe.`}
+         />
+         <dialog ref={ref}>
+            <form method="dialog" className="edit-cell-form" onSubmit={update_val} onReset={() => {
+               ref.current.close()
+            }}>
+               <h2 className="dialog-title">Información de fila</h2>
+               <div className="row-info">
+                  {row_info}
+               </div>
+               <h2 className="dialog-title"> Editar "{edited_col}":</h2>
+               <div className="edit-grid">
+                  <label>
+                     <span>Valor actual:</span>
+                     <span>{edited_val}</span>
+                  </label>
+                  <label>
+                     <span>Nuevo valor:</span>
+                     {new_val_input}
+                  </label>
+               </div>
 
-            <div className="accept-cancel">
-               <button type="submit" className="text-btn ok-btn">Aceptar</button>
-               <button type="reset" className="text-btn not-ok-btn">Cancelar</button>
-            </div>
-         </form>
-      </dialog>
+               <div className="accept-cancel">
+                  <button type="submit" className="text-btn ok-btn">Aceptar</button>
+                  <button type="reset" className="text-btn not-ok-btn">Cancelar</button>
+               </div>
+            </form>
+         </dialog>
+      </>
    )
 }
 
@@ -118,5 +139,3 @@ function parse_input(val, edited_col) {
       default: throw new TypeError(`Unexpected column type: ${edited_col}`)
    }
 }
-
-//! IMPEDIR MEDIDOR REPETIDO!!!!

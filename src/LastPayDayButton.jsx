@@ -10,7 +10,7 @@ export default function LastPayDayButton({ db_connection, meters, tableNum, date
          <LastPayDayModal {...{ payDayRef, db_connection, meters, tableNum, dateFormat, dispatch }} />
          <InfoModal
             ref={denialRef}
-            text={"La tabla ya está sellada. La última fecha de pago ya no puede cambiarse."} />
+            text={"La tabla ya está sellada. La última fecha de pago no puede cambiarse."} />
          <span
             className={meters.editable
                ? "text-btn label-btn ok-btn"

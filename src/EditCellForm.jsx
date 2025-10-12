@@ -22,7 +22,6 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
       const input_data = Object.fromEntries(new FormData(submit_ev.target))
       const updated_val = parse_input(input_data[edited_col], edited_col)
       const copy = structuredClone(meters)
-      // Edition START
       if (edited_col === "medidor")
       {
          const meter_repeated = copy.table.some(row => row["medidor"] === updated_val)
@@ -33,8 +32,6 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
             return
          }
       }
-      // Edition END
-
       copy.table[edited_index][edited_col] = updated_val
       db_connection.put("meters", tableNum, copy)
       dispatch({ type: "EDIT_CELL", copy })

@@ -57,6 +57,13 @@
    }
 }
 
+.modal-p {
+   margin-top: 5px;
+   margin-bottom: 10px;
+   max-width: 240px;
+   /* text-align: center; */
+}
+
 .edit-grid {
    display: grid;
    grid-template-columns: 1fr 1fr;

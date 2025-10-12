@@ -19,9 +19,10 @@ import TableInfo from "./TableInfo.jsx"
 import MetersTable from "./MetersTable.jsx"
 import THead from "./THead.jsx"
 import TBody from "./TBody.jsx"
-import reducer from "./reducer.js"
+import Receipt from "./Receipt.jsx"
 // Utilities:
-import { filter_indexes } from "./core-funcs.js"
+import reducer from "./reducer.js"
+import { filter_indexes, display_date } from "./core-funcs.js"
 import { InfoModal } from "./simpleModals.jsx"
 import RowOptions from "./RowOptions.jsx"
 import FeesTable from "./FeesTable.jsx"
@@ -106,35 +107,76 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const readingForm = useRef()
    const data_cols = cols.filter(col => col.is_data)
    const rowOptionsRef = useRef()
+   // Preparations for the receipts:
    const fees_grid_cells = fees.map((row, i) => {
       return [
          <div key={`${i}-A`} className="r-cell r-border">{row["mínimo"]} - {row["máximo"]}</div>,
          <div key={`${i}-B`} className="r-cell r-border">{row["fórmula"]}</div>
       ]
    })
+   const last_pay_day = meters.last_pay_day
+      ? display_date(meters.last_pay_day, dateFormat)
+      : null
+   const late_payment_fine = meters.fine.toFixed(2)
    const receipts = filtered_indexes.map(index => {
       const row = meters.table[index]
-      return <ReceiptPair key={index} {...{
-         meter_num: row["medidor"],
-         owner: row["titular"],
-         prev: row["anterior"],
-         next: row["actual"],
-         from: row["desde"],
-         until: row["hasta"],
-         receipt_num: row["recibo"],
-         debt: row["deuda"],
-         fine: row["multa"],
-         others: row["otros"],
-         credit: row["crédito"],
-         zone: row["zona"],
-         village: row["caserío"],
-         titles,
-         fees_grid_cells,
-         dateFormat,
-         fees,
-         logoURL,
-         last_pay_day: meters.last_pay_day,
-      }} />
+      const date_from = row["desde"]
+      const date_until = row["hasta"]
+      const days_span = date_from && date_until
+         ? ((date_until - date_from) / (1000 * 60 * 60 * 24)) + 1
+         : null
+      const from = date_from
+         ? display_date(date_from, dateFormat)
+         : null
+      const until = date_until
+         ? display_date(date_until, dateFormat)
+         : null
+      const prev = row["anterior"]
+      const next = row["actual"]
+      const consumo = next !== null && prev !== null
+         ? next - prev
+         : null
+      const formula = consumo
+         ? fees.find(fee_row => consumo >= fee_row["mínimo"] && consumo <= fee_row["máximo"])?.["fórmula"]
+         : null
+      const consumption_fee = formula
+         ? eval(formula)
+         : 0
+      const debt = row["deuda"]
+      const fine = row["multa"]
+      const others = row["otros"]
+      const credit = row["crédito"]
+      const total = consumption_fee + debt + fine + others - credit
+      const receipt_args = { meter_num: row["medidor"], owner: row["titular"], prev, next, consumo, from, until, days_span, receipt_num: row["recibo"], consumption_fee, debt, fine, others, credit, total, zone: row["zona"], village: row["caserío"], last_pay_day, late_payment_fine, titles, logoURL, fees_grid_cells }
+
+      return (
+         <div key={index} className="couple">
+            <Receipt {...receipt_args} />
+            <Receipt {...receipt_args} />
+         </div>
+      )
+      // return <ReceiptPair key={index} {...{
+      //    meter_num: row["medidor"],
+      //    owner: row["titular"],
+      //    prev: row["anterior"],
+      //    next: row["actual"],
+      //    from: row["desde"],
+      //    until: row["hasta"],
+      //    receipt_num: row["recibo"],
+      //    debt: row["deuda"],
+      //    fine: row["multa"],
+      //    others: row["otros"],
+      //    credit: row["crédito"],
+      //    zone: row["zona"],
+      //    village: row["caserío"],
+      //    titles,
+      //    fees_grid_cells,
+      //    dateFormat,
+      //    fees,
+      //    logoURL,
+      //    last_pay_day: meters.last_pay_day,
+      //    table_fine: meters.fine
+      // }} />
    })
 
    return (

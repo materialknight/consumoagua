@@ -1,25 +1,5 @@
-import { display_date } from "./core-funcs"
-
-export default function ReceiptPair({ meter_num, owner, prev, next, from, until, receipt_num, debt, fine, others, credit, zone, village, titles, fees_grid_cells, dateFormat, fees, logoURL, last_pay_day }) {
-   const days_span = from && until ? ((until - from) / (1000 * 60 * 60 * 24)) + 1 : null
-   const display_from = from ? display_date(from, dateFormat) : null
-   const display_until = until ? display_date(until, dateFormat) : null
-   const consumo = next !== null && prev !== null ? next - prev : null
-   const formula = consumo
-      ? fees.find(row => consumo >= row["mínimo"] && consumo <= row["máximo"])?.["fórmula"]
-      : null
-   const consumption_fee = formula ? eval(formula) : 0
-   const total = consumption_fee + debt + fine + others - credit
-   const receipt_args = { titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells, logoURL, last_pay_day }
-   return (
-      <div className="couple">
-         <Receipt {...receipt_args} />
-         <Receipt {...receipt_args} />
-      </div>
-   )
-}
-
-function Receipt({ titles, receipt_num, meter_num, zone, owner, village, prev, next, consumo, display_from, display_until, days_span, consumption_fee, debt, fine, others, credit, total, fees_grid_cells, logoURL, last_pay_day }) {
+export default function Receipt({ meter_num, owner, prev, next, consumo, from, until, days_span, receipt_num, consumption_fee, debt, fine, others, credit, total, zone, village, last_pay_day, late_payment_fine, titles, logoURL, fees_grid_cells
+}) {
    return (
       <div className="receipt">
          <div className="section-1">
@@ -65,11 +45,11 @@ function Receipt({ titles, receipt_num, meter_num, zone, owner, village, prev, n
                </label>
                <label className="r-cell r-border">
                   <span>Desde:</span>
-                  <span className="black-c">{display_from}</span>
+                  <span className="black-c">{from}</span>
                </label>
                <label className="r-cell r-border">
                   <span>Hasta:</span>
-                  <span className="black-c">{display_until}</span>
+                  <span className="black-c">{until}</span>
                </label>
                <label className="r-cell r-border">
                   <span>Cubre:</span>
@@ -98,7 +78,7 @@ function Receipt({ titles, receipt_num, meter_num, zone, owner, village, prev, n
             </div>
          </div>
          <div>Fecha de pago: {last_pay_day}</div>
-         <div>Recuerde, después de vencido pagará una multa de $ PENDIENTE</div>
+         <div>Recuerde, después de vencido pagará una multa de $ {late_payment_fine}</div>
          <div>Horario de pago: PENDIENTE </div>
       </div>
    )

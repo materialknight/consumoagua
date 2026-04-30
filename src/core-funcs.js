@@ -20,6 +20,27 @@ export function display_val(index, row, col, dateFormat) {
    }
 }
 
+export function parse_input(val, edited_col) {
+   switch (edited_col)
+   {
+      case "medidor": return val.trim()
+      case "titular": return val.trim()
+      case "anterior": return parseInt(val)
+      case "actual": return parseInt(val)
+      case "desde": return parse_date(val)
+      case "hasta": return parse_date(val)
+      case "recibo": return parseInt(val)
+      case "pago": return val
+      case "deuda": return parseFloat(val)
+      case "multa": return parseFloat(val)
+      case "otros": return parseFloat(val)
+      case "crédito": return parseFloat(val)
+      case "zona": return val.trim()
+      case "caserío": return val.trim()
+      default: throw new TypeError(`Unexpected column type: ${edited_col}`)
+   }
+}
+
 export function name_file(table) {
    const row = table[0]
    const month_1 = display_date(row.desde, { month: "short" })

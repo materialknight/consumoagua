@@ -1,4 +1,4 @@
-export default function Receipt({ meter_num, owner, prev, next, consumo, from, until, days_span, receipt_num, consumption_fee, debt, fine, others, credit, total, zone, village, last_pay_day, late_payment_fine, titles, logoURL, fees_grid_cells
+export default function Receipt({ meter_num, owner, prev, next, consumo, from, until, days_span, receipt_num, consumption_fee, debt, fine, others, credit, total, zone, village, last_pay_day, late_payment_fine, paymentSchedule, titles, logoURL, fees_grid_cells
 }) {
    return (
       <div className="receipt">
@@ -79,7 +79,7 @@ export default function Receipt({ meter_num, owner, prev, next, consumo, from, u
          </div>
          <div>Fecha de pago: {last_pay_day}</div>
          <div>Recuerde, después de vencido pagará una multa de $ {late_payment_fine}</div>
-         <div>Horario de pago: PENDIENTE </div>
+         <div>Horario de pago: {paymentSchedule} </div>
       </div>
    )
 }

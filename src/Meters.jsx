@@ -26,6 +26,7 @@ import RowOptions from "./RowOptions.jsx"
 // Utilities:
 import reducer from "./reducer.js"
 import { filter_indexes, display_date } from "./core-funcs.js"
+import ScheduleButton from "./ScheduleButton.jsx"
 
 export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
    const [cols, setCols] = useLocalStorage("cols", [
@@ -51,6 +52,7 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
       month: "short",
       year: "2-digit"
    })
+   const [paymentSchedule, setPaymentSchedule] = useLocalStorage("8:00-11:00 A.M. y 1:00-4:00 P.M.")
    const [meters, dispatch] = useReducer(reducer, {
       fine: 0,
       last_pay_day: null,
@@ -163,6 +165,7 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          village: row["caserío"],
          last_pay_day,
          late_payment_fine,
+         paymentSchedule,
          titles,
          logoURL,
          fees_grid_cells
@@ -174,7 +177,6 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
          </div>
       )
    })
-
    return (
       <>
          <MetersMenu>
@@ -185,12 +187,13 @@ export default function Meters({ db_connection, keys, fees, titles, logoURL }) {
             <AddRowButton {...{ db_connection, meters, data_cols, tableNum, dispatch }} />
             <DateButton {...{ dateFormat, setDateFormat }} />
             <PrintButton />
+            <ScheduleButton {...{ meters, paymentSchedule }} />
             <ReceiptButton {...{ receiptNum, setReceiptNum }} />
             <ColSwitches {...{ cols, setCols }} />
          </MetersMenu>
          <main>
             <EditCellForm ref={editCellForm} {...{ edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }} />
-            <ReadingForm ref={readingForm} />
+            <ReadingForm ref={readingForm} {...{ edited, meters, tableNum, db_connection, dispatch }} />
             <RowOptions {...{ rowOptionsRef, meters }} />
             <TableInfo {...{ meters, filtered_indexes, fees }}>
                <FineButton {...{ db_connection, meters, tableNum, dispatch }} />

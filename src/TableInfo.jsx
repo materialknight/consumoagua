@@ -1,4 +1,4 @@
-export default function TableInfo({ meters, filtered_indexes, fees, children }) {
+export default function TableInfo({ meters, filtered_indexes, fees, paymentSchedule, children }) {
    const expected_income = meters.table.reduce((total, row) => {
       const consumo = row["actual"] !== null && row["anterior"] !== null
          ? row["actual"] - row["anterior"]

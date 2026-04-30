@@ -1,10 +1,11 @@
 import { useRef, useState } from "react"
 import { InfoModal } from "./simpleModals"
-import { parse_date, display_val } from "./core-funcs"
+import { parse_date, parse_input, display_val, display_date } from "./core-funcs"
 
 export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_connection, meters, tableNum, dispatch }) {
-   const repetitionRef = useRef()
-   const [repeatedMeter, setRepeatedMeter] = useState(null)
+   const validationErrorRef = useRef()
+   // const [repeatedMeter, setRepeatedMeter] = useState(null)
+   const [errorText, setErrorText] = useState("")
    let row_info = null
    let edited_col = null
    let edited_val = null
@@ -22,15 +23,72 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
       const input_data = Object.fromEntries(new FormData(submit_ev.target))
       const updated_val = parse_input(input_data[edited_col], edited_col)
       const copy = structuredClone(meters)
-      if (edited_col === "medidor")
+      switch (edited_col)
       {
-         const meter_repeated = copy.table.some(row => row["medidor"] === updated_val)
-         if (meter_repeated)
-         {
-            setRepeatedMeter(updated_val)
-            repetitionRef.current.showModal()
-            return
-         }
+         case "medidor":
+            const meter_repeated = copy.table.some(row => row["medidor"] === updated_val)
+            if (meter_repeated)
+            {
+               // setRepeatedMeter(updated_val)
+               setErrorText(`Error: No se modificó la fila porque cada fila debe tener un número de medidor diferente, y el medidor ${updated_val} ya existe.`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "titular": break
+         case "anterior":
+            const cur_reading = copy.table[edited_index]["actual"]
+            if (updated_val > cur_reading)
+            {
+               setErrorText(`Error: No se modificó la fila porque la lectura anterior (${updated_val}) no puede ser mayor que la actual (${cur_reading}).`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "actual":
+            const prev_reading = copy.table[edited_index]["anterior"]
+            if (updated_val < prev_reading)
+            {
+               setErrorText(`Error: No se modificó la fila porque la lectura actual (${updated_val}) no puede ser menor que la anterior (${prev_reading}).`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "desde":
+            const cur_reading_date = copy.table[edited_index]["hasta"]
+            if (updated_val > cur_reading_date)
+            {
+               setErrorText(`Error: No se modificó la fila porque la fecha de la lectura anterior (${display_date(updated_val, dateFormat)}) no puede ser posterior a la fecha de la lectura actual (${display_date(cur_reading_date, dateFormat)}).`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "hasta":
+            const prev_reading_date = copy.table[edited_index]["desde"]
+            if (updated_val < prev_reading_date)
+            {
+               setErrorText(`Error: No se modificó la fila porque la fecha de la lectura actual (${display_date(updated_val, dateFormat)}) no puede ser anterior a la fecha de la lectura anterior (${display_date(prev_reading_date, dateFormat)}).`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "recibo":
+            const receipt_repeated = copy.table.some(row => row["recibo"] === updated_val)
+            if (receipt_repeated)
+            {
+               setErrorText(`Error: No se modificó la fila porque cada fila debe tener un número de recibo diferente, y el recibo ${updated_val} ya existe.`)
+               validationErrorRef.current.showModal()
+               return
+            }
+            break
+         case "pago": break
+         case "deuda": break
+         case "multa": break
+         case "otros": break
+         case "crédito": break
+         case "zona": break
+         case "caserío": break
+         default: throw new TypeError(`Unknown column name: ${edited_col}`)
       }
       copy.table[edited_index][edited_col] = updated_val
       db_connection.put("meters", tableNum, copy)
@@ -40,8 +98,8 @@ export default function EditCellForm({ ref, edited, data_cols, dateFormat, db_co
    return (
       <>
          <InfoModal
-            ref={repetitionRef}
-            text={`Error: No se modificó la fila porque cada fila debe tener un número de medidor diferente, y el medidor ${repeatedMeter} ya existe.`}
+            ref={validationErrorRef}
+            text={errorText}
          />
          <dialog ref={ref}>
             <form method="dialog" className="edit-cell-form" onSubmit={update_val} onReset={() => {
@@ -114,25 +172,4 @@ function create_row_grid(data_cols, edited, dateFormat) {
          </div>
       )
    })
-}
-
-function parse_input(val, edited_col) {
-   switch (edited_col)
-   {
-      case "medidor": return val.trim()
-      case "titular": return val.trim()
-      case "anterior": return parseInt(val)
-      case "actual": return parseInt(val)
-      case "desde": return parse_date(val)
-      case "hasta": return parse_date(val)
-      case "recibo": return parseInt(val)
-      case "pago": return val
-      case "deuda": return parseFloat(val)
-      case "multa": return parseFloat(val)
-      case "otros": return parseFloat(val)
-      case "crédito": return parseFloat(val)
-      case "zona": return val.trim()
-      case "caserío": return val.trim()
-      default: throw new TypeError(`Unexpected column type: ${edited_col}`)
-   }
 }
